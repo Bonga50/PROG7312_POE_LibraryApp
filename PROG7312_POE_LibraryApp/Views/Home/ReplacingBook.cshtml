@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewData["Title"] = "ReplacingBook";
+}
+
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <style>
+
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 60px); /* Adjust as needed */
+        }
+        .row {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .draggable, .droppable {
+            border-radius: 10px;
+            border: 1px solid black;
+            margin: 10px;
+            padding: 10px;
+            height: 45px;
+            width: 75px;
+        }
+
+    </style>
+</head>
+
+
+<body>
+    <div class="center-content">
+        <h4 class ="display-5">Order the numbers in ascending order</h4>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+                <div id="@("draggable" + item.mainNum)" class="draggable">
+                    <p>@item.mainNum</p>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+                <div id="@("droppable" + item.mainNum)" class="droppable">
+                <p></p>
+            </div>
+        }
+    </div>
+
+        <button type="button" class="btn btn-primary">Check</button>
+    </div>
+</body>
+</html>
+
+
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $(".draggable").draggable({
+                revert: function (event, ui) {
+                    $(this).data("uiDraggable").originalPosition = {
+                        top: 0,
+                        left: 0
+                    };
+                    return !event;
+                },
+                stop: function (event, ui) {
+                    if (!ui.helper.data('dropped')) {
+                        $(this).animate({ top: 0, left: 0 }, 'slow');
+                    }
+                }
+            });
+
+            $(".droppable").droppable({
+                accept: '.draggable',
+                drop: function (event, ui) {
+                    // Check if a draggable item has already been dropped
+                    if ($(this).find('.draggable').length > 0) {
+                        // If a draggable item has already been dropped, prevent further drops
+                        ui.draggable.draggable('option', 'revert', true);
+                    } else {
+                        // If no draggable item has been dropped, allow the drop
+                        ui.draggable.position({ of: $(this), my: 'left top', at: 'left top' });
+                        ui.helper.data('dropped', true);
+                        // Append the draggable item back to its original parent
+                        ui.draggable.appendTo(ui.draggable.data('originalParent'));
+                    }
+                },
+                out: function (event, ui) {
+                    ui.helper.data('dropped', false);
+                }
+            });
+        });
+
+       
+    </script>
+
+
+}

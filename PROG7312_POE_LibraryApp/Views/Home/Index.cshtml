@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-left">
+    <h1 class="display-4">The Dewey Decimal System</h1>
+    @* <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
+    <br/>
+    <p>
+        The Dewey Decimal System forms the foundation for how everything is organized in the library. 
+        You might find that delving into the system's details can sometimes be less engaging, 
+        especially for those who are new to it. However, the training software being developed is designed to 
+        transform your learning experience into an enjoyable and captivating one.
+        Upon using this training software, you'll achieve the ability to:
+        <br />
+        <br />
+        • <a asp-controller="Home" asp-action="Index">
+            Identify which broad area
+        </a> a book belongs to.
+        <br />
+        • <a asp-controller="Home" asp-action="Index">
+            Find the call number
+        </a> for a specific topic.
+        <br />
+        • Correctly 
+        <a asp-controller="Home" asp-action="ReplacingBook">
+            replace a book
+        </a>in its position on a shelf.
+
+    </p>
+</div>
