@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PROG7312_POE_LibraryApp.Data;
 using PROG7312_POE_LibraryApp.Models;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace PROG7312_POE_LibraryApp.Controllers
 {
@@ -22,10 +24,14 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
         public IActionResult ReplacingBook()
         {
-            List<Replacingbooks> model = data.getRandomnums(10);
+            List<Books> model = data.getRandomnums(3);
 
 
             return View(model);
+        }
+
+        public IActionResult ReplaceBooksTutorial() {
+            return View();
         }
 
         public IActionResult Privacy()
@@ -37,6 +43,18 @@ namespace PROG7312_POE_LibraryApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public IActionResult GetNewOrder(string order)
+        {
+            // Deserialize the JSON string into a list of strings
+            List<string> mainNums = JsonConvert.DeserializeObject<List<string>>(order);
+
+            // Process the order of items
+            // ...
+
+            return Json(new { success = true });
         }
     }
 }

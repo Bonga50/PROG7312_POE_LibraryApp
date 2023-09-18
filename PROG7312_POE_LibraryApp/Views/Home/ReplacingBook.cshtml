@@ -9,25 +9,53 @@
 
     <style>
 
+
         .center-content {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: calc(100vh - 60px); /* Adjust as needed */
+            justify-content: center; /* Center vertically */
+            align-items: center; /* Center horizontally */
+            height: 100vh; /* Adjust as needed */
         }
         .row {
-            display: flex;
-            flex-direction: row;
+            display: inline-flex; /* Use flexbox to create a horizontal row */
+            justify-content: space-between; /* Space items evenly within the row */
         }
 
-        .draggable, .droppable {
+        /* Adjust the styles for the draggable and droppable elements */
+        .draggable {
             border-radius: 10px;
-            border: 1px solid black;
-            margin: 10px;
-            padding: 10px;
+            width: 125px;
             height: 45px;
-            width: 75px;
+            border: 1px solid black;
+            display: flex; /* Enable flexbox */
+            justify-content: center; /* Center children horizontally */
+            align-items: center;
+            margin: 5px;
+        }
+
+        .help-icon {
+            position: absolute;
+            top: 60px; /* Adjust based on the height of your navbar */
+            right: 10px;
+            width: 50px; 
+            height: 50px;
+        }
+
+        .droppable {
+            border-radius: 10px;
+            width: 135px;
+            height: 75px;
+            border: 1px solid black;
+            background-color: lightblue;
+            display: flex; /* Enable flexbox */
+            justify-content: center; /* Center children horizontally */
+            align-items: center;
+            margin: 5px;
+        }
+
+        .draggable p {
+            margin: 0; /* Remove margins */
         }
 
     </style>
@@ -35,29 +63,37 @@
 
 
 <body>
+    <a asp-controller="Home" asp-action="ReplaceBooksTutorial">
+    <img src="~/images/icons8_help_100.png" class="help-icon" alt="Help Icon" />
+    </a>
     <div class="center-content">
         <h4 class ="display-5">Order the numbers in ascending order</h4>
+        
 
-    <div class="row">
-        @foreach (var item in Model)
-        {
-                <div id="@("draggable" + item.mainNum)" class="draggable">
+        <div class="row">
+            @foreach (var item in Model)
+                {
+                <div id="@("draggable" + item.mainNum)" draggable="true" ondragstart="drag(event)" class="draggable">
                     <p>@item.mainNum</p>
-            </div>
-        }
+                </div>
+                }
+        </div>
+        
+        <br />
+        <br />
+        <div class="row" >
+            @foreach (var item in Model)
+            {
+                <div class="droppable" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <p></p>
+                    </div>
+            }
+        </div>
+        <br/>
+        <br />
+        <button id="checkButton" class="btn btn-primary">CHECK</button>
     </div>
-
-    <div class="row">
-        @foreach (var item in Model)
-        {
-                <div id="@("droppable" + item.mainNum)" class="droppable">
-                <p></p>
-            </div>
-        }
-    </div>
-
-        <button type="button" class="btn btn-primary">Check</button>
-    </div>
+    
 </body>
 </html>
 
@@ -67,44 +103,35 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script>
-        $(function () {
-            $(".draggable").draggable({
-                revert: function (event, ui) {
-                    $(this).data("uiDraggable").originalPosition = {
-                        top: 0,
-                        left: 0
-                    };
-                    return !event;
-                },
-                stop: function (event, ui) {
-                    if (!ui.helper.data('dropped')) {
-                        $(this).animate({ top: 0, left: 0 }, 'slow');
-                    }
-                }
-            });
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
 
-            $(".droppable").droppable({
-                accept: '.draggable',
-                drop: function (event, ui) {
-                    // Check if a draggable item has already been dropped
-                    if ($(this).find('.draggable').length > 0) {
-                        // If a draggable item has already been dropped, prevent further drops
-                        ui.draggable.draggable('option', 'revert', true);
-                    } else {
-                        // If no draggable item has been dropped, allow the drop
-                        ui.draggable.position({ of: $(this), my: 'left top', at: 'left top' });
-                        ui.helper.data('dropped', true);
-                        // Append the draggable item back to its original parent
-                        ui.draggable.appendTo(ui.draggable.data('originalParent'));
-                    }
-                },
-                out: function (event, ui) {
-                    ui.helper.data('dropped', false);
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(data));
+            console.log(data);
+        }
+
+        document.getElementById('checkButton').addEventListener('click', function () {
+            var droppables = document.getElementsByClassName('droppable');
+            var data = [];
+            for (var i = 0; i < droppables.length; i++) {
+                if (droppables[i].hasChildNodes()) {
+                    // Get the id of the first child node of the droppable element
+                    var id = droppables[i].childNodes[3].id;
+                    // Remove the "draggable" part of the id to get the original data
+                    var originalData = id.match(/\d{3}\.\d{3} \w{3}/)[0];
+                    data.push(originalData);
                 }
-            });
+            }
+            console.log(data);
         });
-
-       
     </script>
 
 
