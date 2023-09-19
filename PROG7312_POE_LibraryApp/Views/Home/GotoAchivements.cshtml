@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "GotoAchivements";
+}
+<html lang="en">
+<head>
+   <style>
+        ul.main-list {
+            list-style-type: none; /* Remove default bullets */
+            padding: 0;
+        }
+
+        ul.sub-list {
+            list-style-type: none; /* Remove default bullets */
+            padding: 0;
+        }
+
+            ul.main-list > li {
+                display: flex; /* Use Flexbox */
+                background-color: #f9f9f9; /* Light gray background */
+                border: 1px solid #ddd; /* Add a border */
+                margin: 10px 0; /* Add some margin between list items */
+                padding: 10px; /* Add some padding */
+                transition: background-color 0.3s ease; /* Add a transition effect for hover */
+            }
+
+                ul.main-list > li:hover {
+                    background-color: #ddd; /* Change background color on hover */
+                }
+
+        img {
+            width: 100px; /* Set a fixed width for the images */
+            object-fit: cover; /* Resize the images to cover their area while maintaining aspect ratio */
+            margin-right: 10px; /* Add some margin to the right of the images */
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+</style>
+</head>
+<body>
+    <h1 class="display-5">Achievements</h1>
+    <ul class ="main-list">
+        @foreach (var achievement in Model)
+        {
+            if (!achievement.IsSecret)
+            {
+            <li>
+                
+                <img src="@Url.Content(achievement.Icon)" alt="Achievement Icon" />
+                    <ul class="content sub-list">
+                        <li><h2>@achievement.Name</h2></li>
+                        <li><p>@achievement.Description</p></li>
+                        <li><p>@achievement.Criteria</p></li>
+                    </ul>
+            </li>
+            }
+        }
+    </ul>
+</body>
+</html>

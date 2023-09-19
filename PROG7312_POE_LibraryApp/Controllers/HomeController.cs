@@ -12,7 +12,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
         private readonly ILogger<HomeController> _logger;
         
         private List<Books> model = DataAccess.Instance.randomNums;
-        
+        List<Achivements> AchivementModel = AchievementDataHandler.Instance.Achivements;
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -35,7 +35,10 @@ namespace PROG7312_POE_LibraryApp.Controllers
         public IActionResult ReplaceBooksTutorial() {
             return View();
         }
-
+        public IActionResult GotoAchivements()
+        {
+            return View(AchivementModel);
+        }
         public IActionResult Privacy()
         {
             return View();
@@ -55,5 +58,8 @@ namespace PROG7312_POE_LibraryApp.Controllers
             bool result = DataAccess.Instance.compareLists(sorted, data);
             return Json(new { success = result });
         }
+    
+
+
     }
 }

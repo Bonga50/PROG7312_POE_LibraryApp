@@ -42,6 +42,14 @@
             height: 50px;
         }
 
+        .achievement-icon {
+            position: absolute;
+            top: 60px; /* Adjust based on the height of your navbar */
+            left: 10px;
+            width: 50px;
+            height: 50px;
+        }
+
         .droppable {
             border-radius: 10px;
             width: 135px;
@@ -81,6 +89,10 @@
 <body>
     <a asp-controller="Home" asp-action="ReplaceBooksTutorial">
     <img src="~/images/icons8_help_100.png" class="help-icon" alt="Help Icon" />
+    </a>
+
+    <a asp-controller="Home" asp-action="GotoAchivements">
+        <img src="~/images/icons8_star_100.png" class="achievement-icon" alt="Achievement Icon" />
     </a>
     <div class="center-content">
         <h4 class ="display-5">Order the numbers in ascending order</h4>
