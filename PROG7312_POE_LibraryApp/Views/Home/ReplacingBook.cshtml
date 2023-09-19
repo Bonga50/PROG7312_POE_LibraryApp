@@ -131,6 +131,21 @@
                 }
             }
             console.log(data);
+
+            // Send data to server
+            $.ajax({
+                url: '/Home/CheckOrder', // Replace with your URL
+                type: 'POST',
+                data: { 'data': data },
+                success: function (response) {
+                    // Handle success here
+                    console.log(response);
+                },
+                error: function (error) {
+                    // Handle error here
+                    console.log(error);
+                }
+            });
         });
     </script>
 

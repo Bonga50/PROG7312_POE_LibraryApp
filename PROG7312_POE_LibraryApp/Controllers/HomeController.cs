@@ -46,13 +46,9 @@ namespace PROG7312_POE_LibraryApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetNewOrder(string order)
+        public IActionResult CheckOrder(List<string> data)
         {
-            // Deserialize the JSON string into a list of strings
-            List<string> mainNums = JsonConvert.DeserializeObject<List<string>>(order);
-
-            // Process the order of items
-            // ...
+            // Your code here
 
             return Json(new { success = true });
         }
