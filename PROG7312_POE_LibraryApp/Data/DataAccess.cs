@@ -5,6 +5,29 @@ namespace PROG7312_POE_LibraryApp.Data
 {
     public class DataAccess
     {
+
+        private static DataAccess _instance = null;
+        private static readonly object padlock = new object();
+        public List<Books> randomNums = new List<Books>();
+        DataAccess()
+        {
+        }
+
+        public static DataAccess Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new DataAccess();
+                    }
+                    return _instance;
+                }
+            }
+        }
+
         //List of Aurthors
         List<string> authors = new List<string>()
         {
@@ -89,13 +112,15 @@ namespace PROG7312_POE_LibraryApp.Data
         /// <param name="size"></param>
         /// <returns></returns>
         public List<Books> getRandomnums(int size) {
-            List<Books> newList = new List<Books>();
-
-            for (int i = 0; i < size; i++)
+            if (randomNums.Count<=0)
             {
-                newList.Add(generateRandomNums());
+                for (int i = 0; i < size; i++)
+                {
+                    randomNums.Add(generateRandomNums());
+                }
             }
-            return newList;
+            
+            return randomNums;
         }
 
         /// <summary>
@@ -105,13 +130,54 @@ namespace PROG7312_POE_LibraryApp.Data
         /// <returns></returns>
         public List<Books> getSortednums(List<Books> unSorted)
         {
-            List<Books> newList = new List<Books>();
 
-            for (int i = 0; i < unSorted.Count; i++)
+            for (int i = 0; i < unSorted.Count - 1; i++)
             {
-                newList.Add(generateRandomNums());
+                for (int j = (i+1); j < unSorted.Count; j++)
+                {
+                    //sort y group num
+                    if (String.Compare(unSorted[j].groupNum, unSorted[i].groupNum) < 0)
+                    {
+                        Books temp = unSorted[j];
+                        unSorted[j] = unSorted[i];
+                        unSorted[i] = temp;
+                    }
+
+                    //sort sub group num
+                    if (String.Compare(unSorted[j].groupNum, unSorted[i].groupNum)==0)
+                    {
+                        if (String.Compare(unSorted[j].subGroupNum, unSorted[i].subGroupNum) < 0)
+                        {
+                            Books temp = unSorted[j];
+                            unSorted[j] = unSorted[i];
+                            unSorted[i] = temp;
+                        }
+                    }
+                    //sort by author
+                    if ((String.Compare(unSorted[j].groupNum, unSorted[i].groupNum) == 0)
+                        &&(String.Compare(unSorted[j].subGroupNum, unSorted[i].subGroupNum) == 0))
+                    {
+                        Books temp = unSorted[j];
+                        unSorted[j] = unSorted[i];
+                        unSorted[i] = temp;
+                    }
+
+
+                }
             }
-            return newList;
+            return unSorted;
+        }
+
+        public bool compareLists(List<Books> sorted,List<string> usersList) {
+
+            for (int i = 0; i < sorted.Count; i++)
+            {
+                if (sorted[i].mainNum != usersList[i])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

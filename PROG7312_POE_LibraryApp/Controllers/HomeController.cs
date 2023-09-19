@@ -10,8 +10,9 @@ namespace PROG7312_POE_LibraryApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        DataAccess data = new DataAccess();
-
+        
+        private List<Books> model = DataAccess.Instance.randomNums;
+        
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -24,8 +25,9 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
         public IActionResult ReplacingBook()
         {
-            List<Books> model = data.getRandomnums(3);
-
+            if (model.Count==0) {
+                model = DataAccess.Instance.getRandomnums(3);
+            }
 
             return View(model);
         }
@@ -49,8 +51,9 @@ namespace PROG7312_POE_LibraryApp.Controllers
         public IActionResult CheckOrder(List<string> data)
         {
             // Your code here
-
-            return Json(new { success = true });
+            List<Books>sorted = DataAccess.Instance.getSortednums(model);
+            bool result = DataAccess.Instance.compareLists(sorted, data);
+            return Json(new { success = result });
         }
     }
 }

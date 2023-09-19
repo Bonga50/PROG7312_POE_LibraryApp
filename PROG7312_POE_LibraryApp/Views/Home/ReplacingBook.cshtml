@@ -58,6 +58,22 @@
             margin: 0; /* Remove margins */
         }
 
+        body {
+            /* Add a transition effect for the background-color property */
+            transition: background-color 1s ease;
+        }
+
+
+        .correct-answer {
+            /* Change the background color to green */
+            background-color: #00FF00;
+        }
+
+        .wrong-answer {
+            /* Change the background color to red */
+            background-color: #FF0000;
+        }
+
     </style>
 </head>
 
@@ -140,12 +156,29 @@
                 success: function (response) {
                     // Handle success here
                     console.log(response);
+                    if (response.success == true) { // Use '==' or '===' for comparison
+                        document.body.classList.add("correct-answer");
+                        setTimeout(function () {
+                            document.body.classList.remove("correct-answer");
+                        }, 3000);
+                    } else {
+                        document.body.classList.add("wrong-answer");
+                        setTimeout(function () {
+                            document.body.classList.remove("wrong-answer");
+                        }, 2000);
+                    }
+                    
                 },
                 error: function (error) {
                     // Handle error here
                     console.log(error);
                 }
+
+                
             });
+
+
+         
         });
     </script>
 
