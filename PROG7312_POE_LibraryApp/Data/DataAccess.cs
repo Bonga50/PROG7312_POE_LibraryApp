@@ -112,14 +112,17 @@ namespace PROG7312_POE_LibraryApp.Data
         /// <param name="size"></param>
         /// <returns></returns>
         public List<Books> getRandomnums(int size) {
-            if (randomNums.Count<=0)
+            randomNums.Clear();
+            existingSurnames.Clear();
+            if (size>10)
             {
-                for (int i = 0; i < size; i++)
-                {
-                    randomNums.Add(generateRandomNums());
-                }
+                size = 10;
             }
-            
+            for (int i = 0; i < size; i++)
+            {
+                randomNums.Add(generateRandomNums());
+            }
+
             return randomNums;
         }
 

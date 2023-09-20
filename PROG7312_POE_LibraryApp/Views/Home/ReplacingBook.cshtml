@@ -62,6 +62,11 @@
             margin: 5px;
         }
 
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* Adjust as needed */
+        }
+
         .draggable p {
             margin: 0; /* Remove margins */
         }
@@ -119,7 +124,14 @@
         </div>
         <br/>
         <br />
-        <button id="checkButton" class="btn btn-primary">CHECK</button>
+        
+        <div class="button-container">
+            <button id="checkButton" class="btn btn-primary">CHECK</button>
+            <form asp-action="NextLevel" method="post">
+            <input type="submit" id="nextlevelButton" class="btn btn-primary" value="NEXT LEVEL" style="margin-left: 10px;" disabled/>
+            </form>
+        </div>
+        
     </div>
     
 </body>
@@ -152,15 +164,22 @@
             for (var i = 0; i < droppables.length; i++) {
                 if (droppables[i].hasChildNodes()) {
                     // Get the id of the first child node of the droppable element
+                    try { 
                     var id = droppables[i].childNodes[3].id;
                     // Remove the "draggable" part of the id to get the original data
                     var originalData = id.match(/\d{3}\.\d{3} \w{3}/)[0];
                     data.push(originalData);
+                    } catch(error) {
+                        console.log("Error reading id: ", error);
+                        continue;
+                    }
                 }
             }
             console.log(data);
 
-            // Send data to server
+            
+
+            // Send data to backend
             $.ajax({
                 url: '/Home/CheckOrder', // Replace with your URL
                 type: 'POST',
@@ -170,9 +189,11 @@
                     console.log(response);
                     if (response.success == true) { // Use '==' or '===' for comparison
                         document.body.classList.add("correct-answer");
+                        document.getElementById('nextlevelButton').disabled = false;
                         setTimeout(function () {
                             document.body.classList.remove("correct-answer");
                         }, 3000);
+                        
                     } else {
                         document.body.classList.add("wrong-answer");
                         setTimeout(function () {
@@ -192,6 +213,23 @@
 
          
         });
+
+        // document.getElementById('nextlevelButton').addEventListener('click', function () {
+        //     $.ajax({
+        //         url: '/Home/NextLevel', // Replace with your URL
+        //         type: 'POST',
+        //         success: function (response) {
+        //             // Handle success here
+        //             console.log(response);
+        //             // Refresh the page
+        //             location.reload();
+        //         },
+        //         error: function (error) {
+        //             // Handle error here
+        //             console.log(error);
+        //         }
+        //     });
+       // });
     </script>
 
 

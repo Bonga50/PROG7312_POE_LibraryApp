@@ -13,6 +13,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
         
         private List<Books> model = DataAccess.Instance.randomNums;
         List<Achivements> AchivementModel = AchievementDataHandler.Instance.Achivements;
+
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -25,8 +26,8 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
         public IActionResult ReplacingBook()
         {
-            if (model.Count==0) {
-                model = DataAccess.Instance.getRandomnums(3);
+            if (model.Count==0||model.Count<AchievementDataHandler.Instance.currentLevel) {
+                model = DataAccess.Instance.getRandomnums(AchievementDataHandler.Instance.currentLevel);
             }
 
             return View(model);
@@ -34,6 +35,16 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
         public IActionResult ReplaceBooksTutorial() {
             return View();
+        }
+        [HttpPost]
+        public IActionResult NextLevel()
+        {
+            ++AchievementDataHandler.Instance.currentLevel;
+            if (model.Count!=AchievementDataHandler.Instance.currentLevel)
+            {
+                model = DataAccess.Instance.getRandomnums(AchievementDataHandler.Instance.currentLevel);
+            }
+            return View("ReplacingBook",model);
         }
         public IActionResult GotoAchivements()
         {
@@ -55,10 +66,16 @@ namespace PROG7312_POE_LibraryApp.Controllers
         {
             // Your code here
             List<Books>sorted = DataAccess.Instance.getSortednums(model);
-            bool result = DataAccess.Instance.compareLists(sorted, data);
+            bool result = false;
+            if (data.Count==sorted.Count)
+            {
+                result = DataAccess.Instance.compareLists(sorted, data);
+            }
             return Json(new { success = result });
         }
-    
+   
+       
+
 
 
     }
