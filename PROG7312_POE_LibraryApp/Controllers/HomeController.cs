@@ -12,7 +12,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
         private readonly ILogger<HomeController> _logger;
         
         private List<Books> model = DataAccess.Instance.randomNums;
-        List<Achivements> AchivementModel = AchievementDataHandler.Instance.Achivements;
+        List<Achivements> AchivementModel = AchievementDataHandler.Instance.achievements;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -26,6 +26,12 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
         public IActionResult ReplacingBook()
         {
+            if (!AchievementDataHandler.Instance.achievements[0].IsUnlocked)
+            {
+                // Store the current time in the session
+                AchievementDataHandler.Instance.levelStartTime = DateTime.Now;
+            }
+
             if (model.Count==0||model.Count<AchievementDataHandler.Instance.currentLevel) {
                 model = DataAccess.Instance.getRandomnums(AchievementDataHandler.Instance.currentLevel);
             }
@@ -44,6 +50,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
             {
                 model = DataAccess.Instance.getRandomnums(AchievementDataHandler.Instance.currentLevel);
             }
+            
             return View("ReplacingBook",model);
         }
         public IActionResult GotoAchivements()
@@ -70,7 +77,54 @@ namespace PROG7312_POE_LibraryApp.Controllers
             if (data.Count==sorted.Count)
             {
                 result = DataAccess.Instance.compareLists(sorted, data);
+                
+                //check speed achivement
+                if (result)
+                {
+                    AchievementDataHandler.Instance.AddWin();
+                    // Retrieve the start time from the session
+                    DateTime startTimeStr = AchievementDataHandler.Instance.levelStartTime;
+                    if (startTimeStr != null)
+                    {
+                        TimeSpan elapsed = DateTime.Now - startTimeStr;
+
+                        // Check if less than 7 seconds have passed
+                        if (elapsed.TotalSeconds < 7)
+                        {
+                            AchievementDataHandler.Instance.UnlockSpeedAchivement();
+                        }
+
+                    }
+                }
+                else {
+                    AchievementDataHandler.Instance.AddLosses();
+                }
             }
+            else
+            {
+                AchievementDataHandler.Instance.AddLosses();
+            }
+            //check secret achivement
+            if (AchievementDataHandler.Instance.numberOfLosses > 20)
+            {
+                AchievementDataHandler.Instance.UnlockLosses();
+            }
+            //check one punch achievement
+            if (AchievementDataHandler.Instance.winStreak==10&& AchievementDataHandler.Instance.currentLevel==10)
+            {
+                AchievementDataHandler.Instance.UnlockOnePunch();
+            }
+            //check King of the pirates
+            if (AchievementDataHandler.Instance.currentLevel==10)
+            {
+                AchievementDataHandler.Instance.UnlockKing();
+            }
+            //check Mangekyo
+            if (AchievementDataHandler.Instance.winStreak>=5)
+            {
+                AchievementDataHandler.Instance.UnlockMangekyo();
+            }
+
             return Json(new { success = result });
         }
    

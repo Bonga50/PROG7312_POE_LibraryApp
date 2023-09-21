@@ -45,17 +45,29 @@
     <ul class ="main-list">
         @foreach (var achievement in Model)
         {
-            if (!achievement.IsSecret)
+            if (!achievement.IsSecret && achievement.IsUnlocked)
             {
-            <li>
+            <li style="background:#FDDC5C " >
                 
                 <img src="@Url.Content(achievement.Icon)" alt="Achievement Icon" />
-                    <ul class="content sub-list">
+                <ul class="content sub-list">
                         <li><h2>@achievement.Name</h2></li>
                         <li><p>@achievement.Description</p></li>
                         <li><p>@achievement.Criteria</p></li>
-                    </ul>
+                </ul>
             </li>
+            }
+            else if (!achievement.IsSecret)
+            {
+            <li>
+
+                <img src="@Url.Content(achievement.Icon)" alt="Achievement Icon" />
+                <ul class="content sub-list">
+                    <li><h2>@achievement.Name</h2></li>
+                    <li><p>@achievement.Description</p></li>
+                    <li><p>@achievement.Criteria</p></li>
+                </ul>
+                </li>
             }
         }
     </ul>
