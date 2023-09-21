@@ -110,7 +110,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
                 AchievementDataHandler.Instance.UnlockLosses();
             }
             //check one punch achievement
-            if (AchievementDataHandler.Instance.winStreak==10&& AchievementDataHandler.Instance.currentLevel==10)
+            if (AchievementDataHandler.Instance.winStreak==7 && AchievementDataHandler.Instance.currentLevel==10)
             {
                 AchievementDataHandler.Instance.UnlockOnePunch();
             }
