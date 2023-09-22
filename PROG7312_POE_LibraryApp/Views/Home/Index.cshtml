@@ -14,11 +14,11 @@
         Upon using this training software, you'll achieve the ability to:
         <br />
         <br />
-        • <a asp-controller="Home" asp-action="Index">
+        • <a class="disabled" asp-controller="Home" asp-action="Index" >
             Identify which broad area
         </a> a book belongs to.
         <br />
-        • <a asp-controller="Home" asp-action="Index">
+        • <a class="disabled" asp-controller="Home" asp-action="Index" >
             Find the call number
         </a> for a specific topic.
         <br />
@@ -29,3 +29,11 @@
 
     </p>
 </div>
+<script>
+    var disabledLinks = document.querySelectorAll('.disabled');
+    for (var i = 0; i < disabledLinks.length; i++) {
+        disabledLinks[i].addEventListener('click', function (event) {
+            event.preventDefault();
+        });
+    }
+</script>

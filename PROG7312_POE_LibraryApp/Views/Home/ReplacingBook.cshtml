@@ -189,6 +189,7 @@
                     console.log(response);
                     if (response.success == true) { // Use '==' or '===' for comparison
                         document.body.classList.add("correct-answer");
+                        document.getElementById('checkButton').disabled = true;
                         document.getElementById('nextlevelButton').disabled = false;
                         setTimeout(function () {
                             document.body.classList.remove("correct-answer");
