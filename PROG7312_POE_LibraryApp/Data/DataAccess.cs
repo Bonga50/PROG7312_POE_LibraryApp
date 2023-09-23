@@ -49,7 +49,8 @@ namespace PROG7312_POE_LibraryApp.Data
 
             do
             {
-                surname = authors[rnd.Next(0, authors.Count)].Substring(0,3).ToUpper();
+                surname = GetSurname(authors[rnd.Next(0, authors.Count)]);
+                surname = surname.Substring(0,3).ToUpper();
 
                 if (!existingSurnames.Contains(surname))
                 {
@@ -62,6 +63,25 @@ namespace PROG7312_POE_LibraryApp.Data
             } while (exits);
           return surname;
         
+        }
+        /// <summary>
+        /// This method first splits the input string by spaces, assuming that the last part is the surname.
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
+        public string GetSurname(string fullName)
+        {
+            string[] nameParts = fullName.Split(' ');
+            if (nameParts.Length >= 2)
+            {
+                return nameParts[nameParts.Length - 1];
+            }
+            else
+            {
+                // Handle cases where there might not be a surname.
+                // You can return an empty string or handle it as needed.
+                return string.Empty;
+            }
         }
 
         /// <summary>
