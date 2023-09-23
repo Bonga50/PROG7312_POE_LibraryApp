@@ -180,9 +180,13 @@ namespace PROG7312_POE_LibraryApp.Data
                     if ((String.Compare(unSorted[j].groupNum, unSorted[i].groupNum) == 0)
                         &&(String.Compare(unSorted[j].subGroupNum, unSorted[i].subGroupNum) == 0))
                     {
-                        Books temp = unSorted[j];
-                        unSorted[j] = unSorted[i];
-                        unSorted[i] = temp;
+                        if (String.Compare(unSorted[j].authirInitials, unSorted[i].authirInitials) <0)
+                        {
+                            Books temp = unSorted[j];
+                            unSorted[j] = unSorted[i];
+                            unSorted[i] = temp;
+                        }
+                        
                     }
 
 
