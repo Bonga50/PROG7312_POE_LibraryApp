@@ -74,7 +74,7 @@ namespace PROG7312_POE_LibraryApp.Data
             this.numberOfLosses = 0;
         }
         public void AddLosses()
-        {
+        {   
             this.numberOfLosses = numberOfLosses+1;
             this.winStreak = 0;
         }
