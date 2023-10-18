@@ -1,5 +1,5 @@
 ﻿using PROG7312_POE_LibraryApp.Models;
-using System.Drawing;
+using System.Linq;
 
 namespace PROG7312_POE_LibraryApp.Data
 {
@@ -9,6 +9,9 @@ namespace PROG7312_POE_LibraryApp.Data
         private static DataAccess _instance = null;
         private static readonly object padlock = new object();
         public List<Books> randomNums = new List<Books>();
+        public Dictionary<string, string> areaCallNums = new Dictionary<string, string>();
+        public List<identifyArea> identifyAreaBooks = new List<identifyArea>();
+
         DataAccess()
         {
         }
@@ -36,13 +39,30 @@ namespace PROG7312_POE_LibraryApp.Data
             "James Joyce", "Thomas Hardy", "Edgar Poe", "Robert Frost", "Eliot Cummings",
             "Arthur Doyle", "Agatha Christie", "Stephen King", "Rowling Potter", "Lewis Carroll"
         };
+
         List<string> existingSurnames = new List<string>();
+
+        //Dictionary of call numbers and Areas
+        Dictionary<string, string> identifyAreaList = new Dictionary<string, string>()
+        {
+            {"000", "Generalities"},
+            {"100", "Philosophy & psychology"},
+            {"200", "Religion"},
+            {"300", "Social sciences"},
+            {"400", "Language"},
+            {"500", "Natural sciences & mathematics"},
+            {"600", "Technology (Applied sciences)"},
+            {"700", "The arts"},
+            {"800", "Literature & rhetoric"},
+            {"900", "Geography & history"}
+        };
 
         /// <summary>
         /// Method will generate differnt authors initals 
         /// </summary>
         /// <returns></returns>
-        public string getRandomSurnames() {
+        public string getRandomSurnames()
+        {
             bool exits = true;
             string surname = "";
             Random rnd = new Random();
@@ -50,19 +70,19 @@ namespace PROG7312_POE_LibraryApp.Data
             do
             {
                 surname = GetSurname(authors[rnd.Next(0, authors.Count)]);
-                surname = surname.Substring(0,3).ToUpper();
+                surname = surname.Substring(0, 3).ToUpper();
 
                 if (!existingSurnames.Contains(surname))
                 {
-                   exits = false;
-                   existingSurnames.Add(surname);
-                    
+                    exits = false;
+                    existingSurnames.Add(surname);
+
                 }
 
 
             } while (exits);
-          return surname;
-        
+            return surname;
+
         }
         /// <summary>
         /// This method first splits the input string by spaces, assuming that the last part is the surname.
@@ -92,7 +112,7 @@ namespace PROG7312_POE_LibraryApp.Data
         {
             Books rObj = new Books();
 
-            string tempval ="";
+            string tempval = "";
             string temp2val = "";
             string surname = "";
             //generating main group
@@ -111,7 +131,7 @@ namespace PROG7312_POE_LibraryApp.Data
             surname = getRandomSurnames();
             rObj.authirInitials = surname;
 
-            rObj.mainNum = tempval + "." + temp2val+" "+surname;
+            rObj.mainNum = tempval + "." + temp2val + " " + surname;
             return rObj;
         }
 
@@ -122,7 +142,7 @@ namespace PROG7312_POE_LibraryApp.Data
         public int generateNum()
         {
             Random rand = new Random();
-            
+
             return rand.Next(0, 9);
         }
 
@@ -131,10 +151,11 @@ namespace PROG7312_POE_LibraryApp.Data
         /// </summary>
         /// <param name="size"></param>
         /// <returns></returns>
-        public List<Books> getRandomnums(int size) {
+        public List<Books> getRandomnums(int size)
+        {
             randomNums.Clear();
             existingSurnames.Clear();
-            if (size>10)
+            if (size > 10)
             {
                 size = 10;
             }
@@ -156,7 +177,7 @@ namespace PROG7312_POE_LibraryApp.Data
 
             for (int i = 0; i < unSorted.Count - 1; i++)
             {
-                for (int j = (i+1); j < unSorted.Count; j++)
+                for (int j = (i + 1); j < unSorted.Count; j++)
                 {
                     //sort y group num
                     if (String.Compare(unSorted[j].groupNum, unSorted[i].groupNum) < 0)
@@ -167,7 +188,7 @@ namespace PROG7312_POE_LibraryApp.Data
                     }
 
                     //sort sub group num
-                    if (String.Compare(unSorted[j].groupNum, unSorted[i].groupNum)==0)
+                    if (String.Compare(unSorted[j].groupNum, unSorted[i].groupNum) == 0)
                     {
                         if (String.Compare(unSorted[j].subGroupNum, unSorted[i].subGroupNum) < 0)
                         {
@@ -178,15 +199,15 @@ namespace PROG7312_POE_LibraryApp.Data
                     }
                     //sort by author
                     if ((String.Compare(unSorted[j].groupNum, unSorted[i].groupNum) == 0)
-                        &&(String.Compare(unSorted[j].subGroupNum, unSorted[i].subGroupNum) == 0))
+                        && (String.Compare(unSorted[j].subGroupNum, unSorted[i].subGroupNum) == 0))
                     {
-                        if (String.Compare(unSorted[j].authirInitials, unSorted[i].authirInitials) <0)
+                        if (String.Compare(unSorted[j].authirInitials, unSorted[i].authirInitials) < 0)
                         {
                             Books temp = unSorted[j];
                             unSorted[j] = unSorted[i];
                             unSorted[i] = temp;
                         }
-                        
+
                     }
 
 
@@ -195,7 +216,8 @@ namespace PROG7312_POE_LibraryApp.Data
             return unSorted;
         }
 
-        public bool compareLists(List<Books> sorted,List<string> usersList) {
+        public bool compareLists(List<Books> sorted, List<string> usersList)
+        {
 
             for (int i = 0; i < sorted.Count; i++)
             {
@@ -206,5 +228,130 @@ namespace PROG7312_POE_LibraryApp.Data
             }
             return true;
         }
+
+        public Dictionary<string, string> getDeweyAreas() {
+            Dictionary<string, string> tempCallNums = new Dictionary<string, string>();
+            List<string> tempNums = new List<string>();
+            List<int> tempExisting = new List<int>();
+            //adding call nums in random order
+            int count = 0;
+            while (count < 4) {
+                Random rand = new Random();
+                Random rand2 = new Random();
+                int y = rand.Next(0, identifyAreaList.Count);
+                int z = rand2.Next(0, 2);
+                
+                if (!tempNums.Contains(identifyAreaList.ElementAt(y).Key) && !tempNums.Contains(identifyAreaList.ElementAt(y).Value))
+                {
+                    if (z == 1)
+                    {
+                        tempNums.Add(identifyAreaList.ElementAt(y).Key);
+                        count++;
+                    }
+                    else
+                    {
+                        tempNums.Add(identifyAreaList.ElementAt(y).Value);
+                        count++;
+                    }
+                   
+                }
+            }
+            tempCallNums = generateRandomAreas();
+            count = 0;
+            while (count < 4) {
+                Random random = new Random();
+                int mynum = random.Next(0, tempCallNums.Count);
+
+                if (true)
+                {
+
+                }
+            }
+        
+
+
+            return tempCallNums;
+
+
+        }
+
+        /// <summary>
+        /// Method that will genrate 7 random top level call nums
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, string> generateRandomAreas() {
+            Dictionary<string, string> tempCallNums = new Dictionary<string, string>();
+            int count = 0;
+            while (count< 7)
+            {
+                Random rand = new Random();
+                Random rand2 = new Random();
+                int x = rand.Next(0, identifyAreaList.Count);
+                int y = rand2.Next(0, 2);
+
+                if (!tempCallNums.ContainsKey(identifyAreaList.ElementAt(x).Key)&& !tempCallNums.ContainsKey(identifyAreaList.ElementAt(x).Value))
+                {
+                    if (y == 1)
+                    {
+                        tempCallNums.Add(identifyAreaList.ElementAt(x).Key, identifyAreaList.ElementAt(x).Value);
+                        count++;
+
+                    }
+                    else
+                    {
+                        tempCallNums.Add(identifyAreaList.ElementAt(x).Value, identifyAreaList.ElementAt(x).Key);
+                        count++;
+                    }
+                }
+                
+            }
+            return tempCallNums;
+        }
+
+        public int findArea(string arg) {
+
+            if (arg.Length>3)
+            {
+                for (int i = 0; i < identifyAreaList.Count; i++)
+                {
+                    if (identifyAreaList.ElementAt(i).Value == arg)
+                    {
+                        return i;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < identifyAreaList.Count; i++)
+                {
+                    if (identifyAreaList.ElementAt(i).Key == arg)
+                    {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+
+        
+        }
+
+        //public Dictionary<string, string> addValidAnswers(List<string> questions, Dictionary<string, string> callnums) {
+        //    List<int> tempExisting = new List<int>();
+
+        //    for (int i = 0; i < questions.Count; i++)
+        //    {
+        //        int x = findArea(questions[i]);
+        //        KeyValuePair<string, string> keyValue = identifyAreaList.ElementAt(x);
+        //        if (questions[i].Length<3)
+        //        {
+                   
+        //        }
+        //        else
+        //        {
+
+        //        }
+        //    }
+
+        //}
     }
 }

@@ -13,6 +13,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
         
         private List<Books> model = DataAccess.Instance.randomNums;
         List<Achivements> AchivementModel = AchievementDataHandler.Instance.achievements;
+        Dictionary<string,string> areaModel = new Dictionary<string,string>();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -24,6 +25,16 @@ namespace PROG7312_POE_LibraryApp.Controllers
             return View();
         }
 
+
+        public IActionResult identifyAreas()
+        {
+            if (areaModel.Count==0)
+            {
+                areaModel = DataAccess.Instance.getDeweyAreas();
+            }
+            
+            return View(areaModel);
+        }
         public IActionResult ReplacingBook()
         {
             if (!AchievementDataHandler.Instance.achievements[0].IsUnlocked)
