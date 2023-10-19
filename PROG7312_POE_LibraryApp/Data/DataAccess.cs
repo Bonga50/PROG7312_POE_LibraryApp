@@ -304,45 +304,6 @@ namespace PROG7312_POE_LibraryApp.Data
             return answers;
 
         }
-
-        public int findAreaIndex(string arg) {
-
-            if (arg.Length>3)
-            {
-                for (int i = 0; i < identifyAreaList.Count; i++)
-                {
-                    if (identifyAreaList.ElementAt(i).Value == arg)
-                    {
-                        return i;
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 0; i < identifyAreaList.Count; i++)
-                {
-                    if (identifyAreaList.ElementAt(i).Key == arg)
-                    {
-                        return i;
-                    }
-                }
-            }
-            return -1;
-
-        
-        }
-
-        public bool checkIfAnswerExists(List<string> answers, List<string> questions) {
-
-            for (int i = 0; i < questions.Count; i++)
-            {
-                if (answers.Contains(questions[i]))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
         public string findCorosspondingAnswer(string arg) {
 
             if (arg.Length<=3)
@@ -369,9 +330,12 @@ namespace PROG7312_POE_LibraryApp.Data
             }
             return "";
         }
-
       
-        //method to shuffle the list of pottential answers
+        /// <summary>
+        /// method to shuffle the list of pottential answers
+        /// </summary>
+        /// <param name="answers"></param>
+        /// <returns></returns>
         public List<string> shuffleList(List<string> answers) {
 
             Random random = new Random();
@@ -386,19 +350,26 @@ namespace PROG7312_POE_LibraryApp.Data
             return newShuffledList;
         }
 
-        public bool checkExists(string word, Dictionary<string, string> callnums) {
-        
-            bool exits = false;
-            for (int i = 0; i < callnums.Count; i++)
+        public bool checkIdentifiedAreas(Dictionary<string,string> userAnswers)
+        {
+            if (userAnswers.Count ==0)
             {
-                if (callnums.ElementAt(i).Value == word)
-                {
-                    exits = true;
-                    break;
-                }
+                return false;
             }
-            return exits;
+            bool correct = true;
+            for (int i = 0; i < userAnswers.Count; i++)
+            {
+                string expectedAnswer = findCorosspondingAnswer(userAnswers.ElementAt(i).Key);
+                if (userAnswers.ElementAt(i).Value!=expectedAnswer)
+                {
+                    correct = false;
+                    break;  
+                }
 
+            }
+
+            return correct;
         }
+
     }
 }

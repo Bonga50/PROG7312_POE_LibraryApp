@@ -58,6 +58,16 @@
             margin: 5px;
         }
 
+        .correct-answer {
+            /* Change the background color to green */
+            background-color: #00FF00;
+        }
+
+        .wrong-answer {
+            /* Change the background color to red */
+            background-color: #FF0000;
+        }
+
     </style>
 </head>
 
@@ -74,9 +84,9 @@
                 {
                     if (count<4)
                     {
-                    <div id="@("draggable" + item.Key)" class="draggable" draggable="true" ondragstart="drag(event)">
-                        <p>@item.Key</p>
-                    </div>
+                                <div id="@("draggable" + item.Key)" class="draggable" draggable="true" ondragstart="drag(event)">
+                                    <p>@item.Key</p>
+                                </div>
                      count++;
                     }
                 }
@@ -89,9 +99,9 @@
             @{
                 foreach (var item in Model)
                 {
-                   <div id="@("draggable" + item.Value)" class="droppable" ondrop="drop(event)" ondragover="allowDrop(event)">
-                       <p></p>
-                   </div>  
+                               <div id="@("draggable" + item.Value)" class="droppable" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                   <p></p>
+                               </div>  
                 }
             }
         </div>
@@ -105,9 +115,9 @@
                 {
                     if (count2 < 7)
                     {
-                        <div class="block">
-                            <p>@item.Value</p>
-                        </div>
+                                    <div id="@("block" + item.Value)" class="block">
+                                        <p>@item.Value</p>
+                                    </div>
                         count2++;
                     }
                 }
@@ -148,5 +158,63 @@
             ev.target.appendChild(document.getElementById(data));
             console.log(data);
         }
+
+
+        document.getElementById('checkButton').addEventListener('click', function () {
+            var droppables = document.getElementsByClassName('droppable');
+            var blocks = document.getElementsByClassName('block');
+            var data = {};
+            for (var i = 0; i < droppables.length; i++) {
+                if (droppables[i].hasChildNodes()) {
+                    // Get the id of the first child node of the droppable element
+                    try {
+                        var id = droppables[i].childNodes[3].id;
+                        // Remove the "draggable" part of the id to get the original data
+                        var originalData = id.replace("draggable", "");
+                        // Add the originalData as a key and the corresponding block as its value
+                        if (originalData) {
+                            var blockId = blocks[i].id
+                            data[originalData] = blockId.replace("block", "");;
+                        }
+                    } catch (error) {
+                        console.log("Error reading id: ", error);
+                        continue;
+                    }
+                }
+            }
+            console.log(data);
+
+            // Send data to backend
+            $.ajax({
+                url: '/Home/checkIdentfiedArea', // Replace with your URL
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (response) {
+                    // Handle success here
+                    console.log(response);
+                    if (response.success == true) {
+                        document.body.classList.add("correct-answer");
+                        setTimeout(function () {
+                            document.body.classList.remove("correct-answer");
+                        }, 3000);
+                    } else { 
+                        document.body.classList.add("wrong-answer");
+                        setTimeout(function () {
+                            document.body.classList.remove("wrong-answer");
+                        }, 2000);
+                    }
+                },
+                error: function (error) {
+                    // Handle error here
+                    
+                    console.log(error);
+                }
+
+
+            });
+
+
+        });
     </script>
 }

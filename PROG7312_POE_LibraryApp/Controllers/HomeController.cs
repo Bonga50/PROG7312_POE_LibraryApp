@@ -139,8 +139,12 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
             return Json(new { success = result });
         }
-   
-       
+
+        [HttpPost]
+        public IActionResult checkIdentfiedArea([FromBody] Dictionary<string, string> data) {
+            bool result = DataAccess.Instance.checkIdentifiedAreas(data);
+            return Json(new { success = result });
+        }
 
 
 
