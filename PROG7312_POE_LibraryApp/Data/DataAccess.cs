@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Routing.Template;
 using PROG7312_POE_LibraryApp.Models;
+using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
 
@@ -86,6 +87,7 @@ namespace PROG7312_POE_LibraryApp.Data
             return surname;
 
         }
+
         /// <summary>
         /// This method first splits the input string by spaces, assuming that the last part is the surname.
         /// </summary>
@@ -241,15 +243,10 @@ namespace PROG7312_POE_LibraryApp.Data
           
             tempNums = generateRandomAreas();
             tempNumsAnswers = generateRandomAreasCorrosponding(tempNums);
-            int count = 0;
-            while (count < 4) {
-                Random random = new Random();
-                int mynum = random.Next(0, tempCallNums.Count);
 
-                if (true)
-                {
-
-                }
+            for (int i = 0; i < tempNumsAnswers.Count; i++)
+            {
+                tempCallNums.Add(tempNums[i], tempNumsAnswers[i]);
             }
         
 
@@ -265,7 +262,7 @@ namespace PROG7312_POE_LibraryApp.Data
         public List<string> generateRandomAreas() {
             List<string> tempCallNums = new List<string>();
             int count = 0;
-            while (count< 4)
+            while (count< 7)
             {
                 Random rand = new Random();
                 Random rand2 = new Random();
@@ -299,70 +296,11 @@ namespace PROG7312_POE_LibraryApp.Data
 
         public List<string> generateRandomAreasCorrosponding(List<string> callnums) {
             List<string> answers = new List<string>();
-            int count = 0;
-            while (count < 7)
-            {
-                Random rand = new Random();
-                Random rand2 = new Random();
-                int x = rand.Next(0, identifyAreaList.Count);
-                int y = rand2.Next(0, 2);
-                //add a key
-                if (y == 1)
-                {
-                    if (!answers.Contains(identifyAreaList.ElementAt(x).Key)
-                        &&!answers.Contains(findCorosspondingAnswer(identifyAreaList.ElementAt(x).Key)))
-                    {
-                        answers.Add(identifyAreaList.ElementAt(x).Key);
-                        count++;
-                    }
-                }
-                //add a value
-                else
-                {
-                    if (!answers.Contains(identifyAreaList.ElementAt(x).Value)
-                        && !answers.Contains(findCorosspondingAnswer(identifyAreaList.ElementAt(x).Value)))
-                    {
-                        answers.Add(identifyAreaList.ElementAt(x).Value);
-                        count++;
-                    }
-
-                }
-
-            }
-            List<int> existingIndex = new List<int>();
-            //add possible correct answers
             for (int i = 0; i < callnums.Count; i++)
             {
-                string corresponding = findCorosspondingAnswer(callnums[i]);
-
-                if (!answers.Contains(corresponding))
-                {
-                    bool added = false;
-                    while (!added)
-                    {
-                        
-                        Random r = new Random();
-                        int index = r.Next(0,callnums.Count);
-                        if (!existingIndex.Contains(index))
-                        {
-                            answers[index] = corresponding;
-                            existingIndex.Add(index);
-                            added = true;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int z = 0; z < answers.Count; z++)
-                    {
-                        if (answers[i]==corresponding)
-                        {
-                            existingIndex.Add(z);
-                        }
-                    }
-                }
+                answers.Add(findCorosspondingAnswer(callnums[i]));
             }
-
+            answers = shuffleList(answers);
             return answers;
 
         }
@@ -394,6 +332,17 @@ namespace PROG7312_POE_LibraryApp.Data
         
         }
 
+        public bool checkIfAnswerExists(List<string> answers, List<string> questions) {
+
+            for (int i = 0; i < questions.Count; i++)
+            {
+                if (answers.Contains(questions[i]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public string findCorosspondingAnswer(string arg) {
 
             if (arg.Length<=3)
@@ -421,36 +370,21 @@ namespace PROG7312_POE_LibraryApp.Data
             return "";
         }
 
-        //public Dictionary<string, string> addValidAnswers(List<string> questions, List<string>)
-        //{
-        //    List<int> tempExisting = new List<int>();
+      
+        //method to shuffle the list of pottential answers
+        public List<string> shuffleList(List<string> answers) {
 
-        //    for (int i = 0; i < questions.Count; i++)
-        //    {
-        //        int x = findAreaIndex(questions[i]);
-        //        KeyValuePair<string, string> keyValue = identifyAreaList.ElementAt(x);
-                
-        //        string tempAnswer = findCorosspondingAnswer(questions[i]);
-        //        bool exits = checkExists(tempAnswer,callnums);
-        //        if (exits)
-        //        {
-        //            tempExisting.Add(x);
-        //        }
-        //        else
-        //        {
-        //            Random r = new Random();
-        //            int rand = r.Next(0, callnums.Count);
-        //            while (!tempExisting.Contains(rand))
-        //            {
-        //                rand = r.Next(0, callnums.Count);
-        //                callnums.ElementAt(rand).Value = "";
-        //            }
-                
-                    
-        //        }
-        //    }
-
-        //}
+            Random random = new Random();
+            List<string> newShuffledList = new List<string>();
+            int listcCount = answers.Count;
+            for (int i = 0; i < listcCount; i++)
+            {
+                var randomElementInList = random.Next(0, answers.Count);
+                newShuffledList.Add(answers[randomElementInList]);
+                answers.Remove(answers[randomElementInList]);
+            }
+            return newShuffledList;
+        }
 
         public bool checkExists(string word, Dictionary<string, string> callnums) {
         

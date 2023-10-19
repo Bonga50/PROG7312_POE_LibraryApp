@@ -10,6 +10,13 @@
             justify-content:space-between;
         }
 
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
         .center-content {
             justify-content: center; /* Center vertically */
             height: 100vh; /* Adjust as needed */
@@ -55,7 +62,10 @@
 </head>
 
 <body>
+    
     <h4 class="display-5">Identify the areas that these numbers belong to.</h4>
+    <div class="main-container">
+
     <div class="col_display center-content">
 
         <div>
@@ -64,8 +74,7 @@
                 {
                     if (count<4)
                     {
-
-                    <div class ="draggable">
+                    <div id="@("draggable" + item.Key)" class="draggable" draggable="true" ondragstart="drag(event)">
                         <p>@item.Key</p>
                     </div>
                      count++;
@@ -78,16 +87,11 @@
 
         <div>
             @{
-                count = 0;
                 foreach (var item in Model)
                 {
-                    if (count < 7)
-                    {
-                        <div class="droppable">
-                            <p>empty</p>
-                        </div>
-                        count++;
-                    }
+                   <div id="@("draggable" + item.Value)" class="droppable" ondrop="drop(event)" ondragover="allowDrop(event)">
+                       <p></p>
+                   </div>  
                 }
             }
         </div>
@@ -109,18 +113,18 @@
                 }
             }
         </div>
-        <br />
-        <br />
 
+
+            <div style="margin-left: 30px; justify-content: center;">
+                <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
+            <form asp-action="goAgain" method="post">
+                <input type="submit" id="nextlevelButton" class="btn btn-primary" value="GO AGAIN" style="margin: 30px;" disabled />
+            </form>
+        </div>
 
     </div>
-    <div>
-        <button id="checkButton" class="btn btn-primary">CHECK</button>
-        <form asp-action="NextLevel" method="post">
-            <input type="submit" id="nextlevelButton" class="btn btn-primary" value="NEXT LEVEL" style="margin-left: 10px;" disabled />
-        </form>
-    </div>
-
+    
+  </div>
 </body>
 
 </html>
