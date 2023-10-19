@@ -23,10 +23,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ReplacingBook">Replacing Books</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Identifying Areas</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="identifyAreas">Identifying Areas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Finding Call Numbers</a>
+                            <a class="nav-link text-dark disabled" asp-area="" asp-controller="Home" asp-action="Index">Finding Call Numbers</a>
                         </li>
                     </ul>
                 </div>
@@ -48,5 +48,14 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        var disabledLinks = document.querySelectorAll('.disabled');
+        for (var i = 0; i < disabledLinks.length; i++) {
+            disabledLinks[i].addEventListener('click', function (event) {
+                event.preventDefault();
+            });
+        }
+
+    </script>
 </body>
 </html>
