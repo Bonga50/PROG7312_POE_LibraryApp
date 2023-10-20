@@ -15,6 +15,9 @@ namespace PROG7312_POE_LibraryApp.Data
         public Dictionary<string, string> areaCallNums = new Dictionary<string, string>();
         public List<identifyArea> identifyAreaBooks = new List<identifyArea>();
 
+        public int mySwitch { get; set; }
+
+
         DataAccess()
         {
         }
@@ -255,6 +258,20 @@ namespace PROG7312_POE_LibraryApp.Data
 
         }
 
+        public int getSwitch() {
+            if (mySwitch==1)
+            {
+                mySwitch = 2;
+                return mySwitch;
+            }
+            else
+            {
+                mySwitch =1;
+                return mySwitch;
+            }
+            
+        }
+
         /// <summary>
         /// Method that will genrate 7 random top level call nums
         /// </summary>
@@ -262,12 +279,13 @@ namespace PROG7312_POE_LibraryApp.Data
         public List<string> generateRandomAreas() {
             List<string> tempCallNums = new List<string>();
             int count = 0;
+            int y = getSwitch();
             while (count< 7)
             {
                 Random rand = new Random();
                 Random rand2 = new Random();
                 int x = rand.Next(0, identifyAreaList.Count);
-                int y = rand2.Next(0, 2);
+                
                 //add a key
                 if (y==1)
                 {
