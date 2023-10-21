@@ -101,7 +101,9 @@
     </a>
     <div class="center-content">
         <h4 class ="display-5">Order the numbers in ascending order</h4>
-        
+        <p id="message" style="display: none; align-items: center; justify-content: center; background-color: #00FF00; text-align:center; font-weight: bold; font-size: 20px;">CORRECT</p>
+        <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT</p>
+
 
         <div class="row">
             @foreach (var item in Model)
@@ -185,20 +187,26 @@
                 type: 'POST',
                 data: { 'data': data },
                 success: function (response) {
+                    var messageElement = document.getElementById('message');
+                    var messageElementWrong = document.getElementById('messageWrong');
                     // Handle success here
                     console.log(response);
                     if (response.success == true) { // Use '==' or '===' for comparison
                         document.body.classList.add("correct-answer");
                         document.getElementById('checkButton').disabled = true;
                         document.getElementById('nextlevelButton').disabled = false;
+                        messageElement.style.display = "block";
                         setTimeout(function () {
                             document.body.classList.remove("correct-answer");
+                            messageElement.style.display = "none";
                         }, 3000);
                         
                     } else {
+                        messageElementWrong.style.display = "block";
                         document.body.classList.add("wrong-answer");
                         setTimeout(function () {
                             document.body.classList.remove("wrong-answer");
+                            messageElementWrong.style.display = "none";
                         }, 2000);
                     }
                     

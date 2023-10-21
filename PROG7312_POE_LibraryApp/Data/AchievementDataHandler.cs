@@ -28,6 +28,8 @@ namespace PROG7312_POE_LibraryApp.Data
         }
         public int numberOfWins { get; set; }
         public int winStreak { get; set; }
+        public int numberOfColMatchWins { get; set; }
+        public int numberOfColMatchLooses { get; set; }
         public int numberOfLosses { get; set; }
         public DateTime levelStartTime { get; set; }
         public List<Achivements> achievements { get; set; } = new List<Achivements>() {
@@ -39,7 +41,11 @@ namespace PROG7312_POE_LibraryApp.Data
         "Solve the hardest level perfectly the first time.",false,false),
         new Achivements(104,"King of the Pirates","The determination you show is admirable and you should be proud of how far you have come.",
         "~/images/KingOfthePirate_Achivment_logo.png","Solve all the levels from easy to hard.",false,false),
-        new Achivements(105,"?????","????????????????????????","~/images/darkWoejack_Achivement_logo.png","Lose the same level 20 times.",true,false)
+        new Achivements(105,"Infinite Memory","You’ve got a memory so sharp, you could out-remember a dolphin! You’re one ‘fin-flipping’ memory maestro that can leave anyone ‘ocean-deep’ in awe!",
+        "~/images/BigBrain3.jpg","Get the item matching right 3 times in a row",false,false),
+        new Achivements(106,"Thinking hard","You dont give up easily and you will achive what ever you put your mind too.",
+        "~/images/math-thinking.gif","Loose item column matching five times.",false,false),
+        new Achivements(107,"?????","????????????????????????","~/images/darkWoejack_Achivement_logo.png","Lose the same level 20 times.",true,false)
         };
 
         public List<Achivements> GetAchivements()
@@ -64,8 +70,8 @@ namespace PROG7312_POE_LibraryApp.Data
         }
         public void UnlockLosses()
         {
-            achievements.First(x => x.ID == 105).IsUnlocked = true;
-            achievements.First(x => x.ID == 105).IsSecret = false;
+            achievements.First(x => x.ID == 107).IsUnlocked = true;
+            achievements.First(x => x.ID == 107).IsSecret = false;
         }
 
         public void AddWin() {
@@ -79,6 +85,23 @@ namespace PROG7312_POE_LibraryApp.Data
             this.winStreak = 0;
         }
 
+        public void AddColMatchWin() {
+            this.numberOfColMatchWins++;
+            this.numberOfColMatchLooses = 0;
+        }
+        public void AddColMatchloose() {
+            this.numberOfColMatchLooses++;
+            this.numberOfColMatchWins = 0;
+        }
+
+        public void UnlockInfiniteMemory()
+        {
+            achievements.First(x => x.ID == 105).IsUnlocked = true;
+        }
+        public void UnlockThinkingHard()
+        {
+            achievements.First(x => x.ID == 106).IsUnlocked = true;
+        }
 
     }
 }

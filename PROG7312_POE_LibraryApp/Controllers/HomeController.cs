@@ -49,9 +49,20 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
             return View(model);
         }
-
+        public IActionResult IdentifyAreasTutorial()
+        {
+            return View();
+        }
         public IActionResult ReplaceBooksTutorial() {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult goAgain() {
+         
+            areaModel = DataAccess.Instance.getDeweyAreas();
+            
+            return View("identifyAreas", areaModel);
         }
         [HttpPost]
         public IActionResult NextLevel()
@@ -64,6 +75,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
             
             return View("ReplacingBook",model);
         }
+
         public IActionResult GotoAchivements()
         {
             return View(AchivementModel);
@@ -143,6 +155,21 @@ namespace PROG7312_POE_LibraryApp.Controllers
         [HttpPost]
         public IActionResult checkIdentfiedArea([FromBody] Dictionary<string, string> data) {
             bool result = DataAccess.Instance.checkIdentifiedAreas(data);
+
+            if (result) { AchievementDataHandler.Instance.AddColMatchWin(); }
+            else { AchievementDataHandler.Instance.AddColMatchloose(); }
+            //check infinite memory
+            if (AchievementDataHandler.Instance.numberOfColMatchWins >=3)
+            {
+                AchievementDataHandler.Instance.UnlockInfiniteMemory();
+            }
+            //check Thinking hard
+            if (AchievementDataHandler.Instance.numberOfColMatchLooses >= 5)
+            {
+                AchievementDataHandler.Instance.UnlockThinkingHard();
+            }
+
+
             return Json(new { success = result });
         }
 

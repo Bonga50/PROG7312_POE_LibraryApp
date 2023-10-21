@@ -58,6 +58,27 @@
             margin: 5px;
         }
 
+        .help-icon {
+            position: absolute;
+            top: 60px; /* Adjust based on the height of your navbar */
+            right: 10px;
+            width: 50px;
+            height: 50px;
+        }
+
+        .achievement-icon {
+            position: absolute;
+            top: 60px; /* Adjust based on the height of your navbar */
+            left: 10px;
+            width: 50px;
+            height: 50px;
+        }
+
+        body {
+            /* Add a transition effect for the background-color property */
+            transition: background-color 1s ease;
+        }
+
         .correct-answer {
             /* Change the background color to green */
             background-color: #00FF00;
@@ -72,8 +93,18 @@
 </head>
 
 <body>
-    
-    <h4 class="display-5">Identify the areas that these numbers belong to.</h4>
+    <a asp-controller="Home" asp-action="IdentifyAreasTutorial">
+        <img src="~/images/icons8_help_100.png" class="help-icon" alt="Help Icon" />
+    </a>
+
+    <a asp-controller="Home" asp-action="GotoAchivements">
+        <img src="~/images/icons8_star_100.png" class="achievement-icon" alt="Achievement Icon" />
+    </a>
+    <h4 class="display-5">Match items between columns</h4>
+    <p id="message" style="display: none; align-items: center; justify-content: center; background-color: #00FF00; text-align:center; font-weight: bold; font-size: 20px;">CORRECT</p>
+    <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT</p>
+    <br />
+    <br />
     <div class="main-container">
 
     <div class="col_display center-content">
@@ -84,9 +115,9 @@
                 {
                     if (count<4)
                     {
-                                <div id="@("draggable" + item.Key)" class="draggable" draggable="true" ondragstart="drag(event)">
-                                    <p>@item.Key</p>
-                                </div>
+                        <div id="@("draggable" + item.Key)" class="draggable" draggable="true" ondragstart="drag(event)">
+                            <p>@item.Key</p>
+                        </div>
                      count++;
                     }
                 }
@@ -99,9 +130,9 @@
             @{
                 foreach (var item in Model)
                 {
-                               <div id="@("draggable" + item.Value)" class="droppable" ondrop="drop(event)" ondragover="allowDrop(event)">
-                                   <p></p>
-                               </div>  
+                  <div id="@("draggable" + item.Value)" class="droppable" ondrop="drop(event)" ondragover="allowDrop(event)">
+                      <p></p>
+                  </div>  
                 }
             }
         </div>
@@ -115,9 +146,9 @@
                 {
                     if (count2 < 7)
                     {
-                                    <div id="@("block" + item.Value)" class="block">
-                                        <p>@item.Value</p>
-                                    </div>
+                       <div id="@("block" + item.Value)" class="block">
+                           <p>@item.Value</p>
+                       </div>
                         count2++;
                     }
                 }
@@ -128,7 +159,7 @@
             <div style="margin-left: 30px; justify-content: center;">
                 <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
             <form asp-action="goAgain" method="post">
-                <input type="submit" id="nextlevelButton" class="btn btn-primary" value="GO AGAIN" style="margin: 30px;" disabled />
+                <input type="submit" id="goAgainButton" class="btn btn-primary" value="AGAIN" style="margin: 30px;" disabled />
             </form>
         </div>
 
@@ -193,16 +224,42 @@
                 success: function (response) {
                     // Handle success here
                     console.log(response);
+                    var messageElement = document.getElementById('message');
+                    var messageElementWrong = document.getElementById('messageWrong');
+                    
                     if (response.success == true) {
+                        if (messageElementWrong.style.display === "block") {
+                            messageElementWrong.style.display = "none";
+                        }
+
+                        messageElement.style.display = "block";
                         document.body.classList.add("correct-answer");
+                        document.getElementById('checkButton').disabled = true;
+                        document.getElementById('goAgainButton').disabled = false;
+
                         setTimeout(function () {
                             document.body.classList.remove("correct-answer");
+                           // messageElement.style.display = "none";
                         }, 3000);
-                    } else { 
+                        setTimeout(function () {
+                            messageElement.style.display = "none";
+                        }, 5000);
+
+
+                    } else {
+                        if (messageElement.style.display === "block") {
+                            messageElement.style.display = "none";
+                        }
+                        messageElementWrong.style.display = "block";
                         document.body.classList.add("wrong-answer");
+
                         setTimeout(function () {
                             document.body.classList.remove("wrong-answer");
+                            //messageElement.style.display = "none";
                         }, 2000);
+                        setTimeout(function () {
+                            messageElementWrong.style.display = "none";
+                        }, 4000);
                     }
                 },
                 error: function (error) {
