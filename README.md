@@ -19,7 +19,8 @@ Here is a video link to show case how its used for Part2. https://youtu.be/CISG_
 
 
 - Replacing Books: Allows the user to sort call numbers and learn more abot the dewey decimal system.It starts with 3 call numbers and increments to 10 to ease the user in to learing the system.
-- Feature 2: Coming soon...
+- Identifying areas: Allows user to match columns of call numbers and descriptions. It alternates between matching call numbers with descriptions and descriptions with call numbers.
+- Feature 3: Coming soon...
 
 ## Getting Started
 
