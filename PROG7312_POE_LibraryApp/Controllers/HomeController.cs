@@ -49,6 +49,13 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
             return View(model);
         }
+
+        public IActionResult findingCallNumbers()
+        {
+            return View();
+        
+        }
+
         public IActionResult IdentifyAreasTutorial()
         {
             return View();
