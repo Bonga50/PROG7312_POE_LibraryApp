@@ -52,6 +52,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
         public IActionResult findingCallNumbers()
         {
+            DataAccess.Instance.getCallNumbersFromTextFile();
             return View();
         
         }

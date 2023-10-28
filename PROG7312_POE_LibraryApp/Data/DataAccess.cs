@@ -3,6 +3,7 @@ using PROG7312_POE_LibraryApp.Models;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace PROG7312_POE_LibraryApp.Data
 {
@@ -257,7 +258,10 @@ namespace PROG7312_POE_LibraryApp.Data
 
 
         }
-
+        /// <summary>
+        /// Method to control alternation between call nums and descriptions
+        /// </summary>
+        /// <returns></returns>
         public int getSwitch() {
             if (mySwitch==1)
             {
@@ -311,7 +315,11 @@ namespace PROG7312_POE_LibraryApp.Data
             }
             return tempCallNums;
         }
-
+        /// <summary>
+        /// Method that wil generate the pottential answers to match the generated list and suffle them.
+        /// </summary>
+        /// <param name="callnums"></param>
+        /// <returns></returns>
         public List<string> generateRandomAreasCorrosponding(List<string> callnums) {
             List<string> answers = new List<string>();
             for (int i = 0; i < callnums.Count; i++)
@@ -322,6 +330,12 @@ namespace PROG7312_POE_LibraryApp.Data
             return answers;
 
         }
+
+        /// <summary>
+        /// Method that will get the value if the key is parsed and will get the key if the value is parsed.
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
         public string findCorosspondingAnswer(string arg) {
 
             if (arg.Length<=3)
@@ -388,6 +402,70 @@ namespace PROG7312_POE_LibraryApp.Data
 
             return correct;
         }
+
+        public void getCallNumbersFromTextFile() {
+            string path =getPath();
+            var root = BuildTree(path);
+
+        }
+
+        public string getPath() {
+            string path = "CallNumbers.txt";
+            string pathToFile = AppDomain.CurrentDomain.BaseDirectory + $"\\{path}";
+            string filePath = Path.GetFullPath(pathToFile).Replace(@"\bin\Debug\net6.0", @"\Data");
+            return filePath;
+        }
+
+
+        public CallNumberTree BuildTree(string path)
+        {
+            var nodes = new Dictionary<string, CallNumberNode>();
+            CallNumberNode root = new CallNumberNode() { callNumber = "0",description="",callNumberParent = null,callNumberChildern = new List<CallNumberNode>()};
+
+            using (StreamReader sr = new StreamReader(path))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    int currentLevel1Index = 0;
+                    int currentLevel2Index = 0;
+                    string[] parts = line.Split(new[] { ',' }, 2);
+                    if (line.Contains(" - "))
+                    {
+                        
+                        parts = line.Split(new[] { '-'}, 2);
+                        root.addChildCallnumber(parts[0], parts[1]);
+                    }
+                    else
+                    {
+                        parts = line.Split(new[] { ',' }, 2);
+                        currentLevel1Index = Int32.Parse(parts[0].Substring(0, 1));
+                        int callNumber = int.Parse(parts[0]);
+                        if (callNumber % 10 ==0)
+                        {
+                            root.callNumberChildern[currentLevel1Index].addChildCallnumber(parts[0], parts[1]);
+                            currentLevel2Index = 0;
+                        }
+                        else
+                        {
+                            currentLevel2Index = Int32.Parse(parts[0].Substring(1, 1));
+                            root.callNumberChildern[currentLevel1Index].callNumberChildern[currentLevel2Index].addChildCallnumber(parts[0], parts[1]);
+                        }
+                        
+
+                    }
+
+
+                }
+            }
+            CallNumberTree callNumbers = new CallNumberTree(root);
+            return callNumbers;
+            
+        }
+
+       
+
+       
 
     }
 }
