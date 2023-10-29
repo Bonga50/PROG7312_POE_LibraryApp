@@ -13,6 +13,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
         
         private List<Books> model = DataAccess.Instance.randomNums;
         List<Achivements> AchivementModel = AchievementDataHandler.Instance.achievements;
+        private List<CallNumberNode> findingCallnumModel = DataAccess.Instance.findingCallNumberList;
         Dictionary<string,string> areaModel = new Dictionary<string,string>();
 
         public HomeController(ILogger<HomeController> logger)
@@ -52,8 +53,14 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
         public IActionResult findingCallNumbers()
         {
-            DataAccess.Instance.getCallNumbersFromTextFile();
-            return View();
+            if (findingCallnumModel.Count==0)
+            {
+                findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
+                
+
+            }
+            ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+            return View(findingCallnumModel);
         
         }
 

@@ -8,5 +8,19 @@
     </head>
     <body>
     <h4 class="display-5">Find the correct call number</h4>
+
+    <p>@ViewBag.SelectedCallnumber.description</p>
+
+    @{
+    foreach (var item in Model)
+        {
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="" name="optradio" value="option1" checked> @(item.callNumber) @(item.description)
+                <label class="form-check-label" for="radio1"></label>
+            </div>
+        }
+    }
+
+    <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
     </body>
 </html>

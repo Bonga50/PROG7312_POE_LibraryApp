@@ -16,7 +16,9 @@ namespace PROG7312_POE_LibraryApp.Data
         public List<Books> randomNums = new List<Books>();
         public Dictionary<string, string> areaCallNums = new Dictionary<string, string>();
         public List<identifyArea> identifyAreaBooks = new List<identifyArea>();
-
+        public List<CallNumberNode> findingCallNumberList = new List<CallNumberNode>();
+        public CallNumberNode selectedRandomCallNumNode = new CallNumberNode();
+        public int findingCallnumberLevel { get; set; }
         public int mySwitch { get; set; }
 
 
@@ -408,13 +410,15 @@ namespace PROG7312_POE_LibraryApp.Data
             return correct;
         }
 
-        public void getCallNumbersFromTextFile() {
+        public List<CallNumberNode> getCallNumbersFromTextFile() {
             string path = getPath();
             CallNumberTree Tree = BuildTree(path);
             CallNumberNode randomCallNumberNode = getRandomCallNumberNode(Tree.root);
-
-            getRandomPotentialAnswers(Tree.root, randomCallNumberNode,3);
-
+            selectedRandomCallNumNode = randomCallNumberNode;
+            List<CallNumberNode> numberNodes = getRandomPotentialAnswers(Tree.root, randomCallNumberNode,3);
+            findingCallNumberList = numberNodes;
+            return numberNodes;
+            
         }
         /// <summary>
         /// Method to get the path to the path for the text file
