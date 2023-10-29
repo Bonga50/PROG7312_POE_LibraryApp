@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Routing.Template;
 using PROG7312_POE_LibraryApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
@@ -244,7 +245,7 @@ namespace PROG7312_POE_LibraryApp.Data
 
             List<int> tempExisting = new List<int>();
 
-          
+
             tempNums = generateRandomAreas();
             tempNumsAnswers = generateRandomAreasCorrosponding(tempNums);
 
@@ -252,7 +253,7 @@ namespace PROG7312_POE_LibraryApp.Data
             {
                 tempCallNums.Add(tempNums[i], tempNumsAnswers[i]);
             }
-        
+
 
             return tempCallNums;
 
@@ -263,17 +264,17 @@ namespace PROG7312_POE_LibraryApp.Data
         /// </summary>
         /// <returns></returns>
         public int getSwitch() {
-            if (mySwitch==1)
+            if (mySwitch == 1)
             {
                 mySwitch = 2;
                 return mySwitch;
             }
             else
             {
-                mySwitch =1;
+                mySwitch = 1;
                 return mySwitch;
             }
-            
+
         }
 
         /// <summary>
@@ -284,14 +285,14 @@ namespace PROG7312_POE_LibraryApp.Data
             List<string> tempCallNums = new List<string>();
             int count = 0;
             int y = getSwitch();
-            while (count< 7)
+            while (count < 7)
             {
                 Random rand = new Random();
                 Random rand2 = new Random();
                 int x = rand.Next(0, identifyAreaList.Count);
-                
+
                 //add a key
-                if (y==1)
+                if (y == 1)
                 {
                     if (!tempCallNums.Contains(identifyAreaList.ElementAt(x).Key) &&
                         !tempCallNums.Contains(findCorosspondingAnswer(identifyAreaList.ElementAt(x).Key)))
@@ -311,7 +312,7 @@ namespace PROG7312_POE_LibraryApp.Data
                     }
 
                 }
-                
+
             }
             return tempCallNums;
         }
@@ -338,11 +339,11 @@ namespace PROG7312_POE_LibraryApp.Data
         /// <returns></returns>
         public string findCorosspondingAnswer(string arg) {
 
-            if (arg.Length<=3)
+            if (arg.Length <= 3)
             {
                 for (int i = 0; i < identifyAreaList.Count; i++)
                 {
-                    if (identifyAreaList.ElementAt(i).Key==arg)
+                    if (identifyAreaList.ElementAt(i).Key == arg)
                     {
                         return identifyAreaList.ElementAt(i).Value;
                     }
@@ -362,7 +363,7 @@ namespace PROG7312_POE_LibraryApp.Data
             }
             return "";
         }
-      
+
         /// <summary>
         /// method to shuffle the list of pottential answers
         /// </summary>
@@ -381,10 +382,14 @@ namespace PROG7312_POE_LibraryApp.Data
             }
             return newShuffledList;
         }
-
-        public bool checkIdentifiedAreas(Dictionary<string,string> userAnswers)
+        /// <summary>
+        /// Method that will compare users answers to the correct answers.
+        /// </summary>
+        /// <param name="userAnswers"></param>
+        /// <returns></returns>
+        public bool checkIdentifiedAreas(Dictionary<string, string> userAnswers)
         {
-            if (userAnswers.Count ==0)
+            if (userAnswers.Count == 0)
             {
                 return false;
             }
@@ -392,10 +397,10 @@ namespace PROG7312_POE_LibraryApp.Data
             for (int i = 0; i < userAnswers.Count; i++)
             {
                 string expectedAnswer = findCorosspondingAnswer(userAnswers.ElementAt(i).Key);
-                if (userAnswers.ElementAt(i).Value!=expectedAnswer)
+                if (userAnswers.ElementAt(i).Value != expectedAnswer)
                 {
                     correct = false;
-                    break;  
+                    break;
                 }
 
             }
@@ -404,23 +409,32 @@ namespace PROG7312_POE_LibraryApp.Data
         }
 
         public void getCallNumbersFromTextFile() {
-            string path =getPath();
-            var root = BuildTree(path);
+            string path = getPath();
+            CallNumberTree Tree = BuildTree(path);
+            CallNumberNode randomCallNumberNode = getRandomCallNumberNode(Tree.root);
+
+            getRandomPotentialAnswers(Tree.root, randomCallNumberNode,3);
 
         }
-
+        /// <summary>
+        /// Method to get the path to the path for the text file
+        /// </summary>
+        /// <returns>the path of the text file</returns>
         public string getPath() {
             string path = "CallNumbers.txt";
             string pathToFile = AppDomain.CurrentDomain.BaseDirectory + $"\\{path}";
             string filePath = Path.GetFullPath(pathToFile).Replace(@"\bin\Debug\net6.0", @"\Data");
             return filePath;
         }
-
-
+        /// <summary>
+        /// Method that will poulate the list and all levels
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>A tree of the call numbers</returns>
         public CallNumberTree BuildTree(string path)
         {
             var nodes = new Dictionary<string, CallNumberNode>();
-            CallNumberNode root = new CallNumberNode() { callNumber = "0",description="",callNumberParent = null,callNumberChildern = new List<CallNumberNode>()};
+            CallNumberNode root = new CallNumberNode() { callNumber = "0", description = "", callNumberParent = null, callNumberChildern = new List<CallNumberNode>() };
 
             using (StreamReader sr = new StreamReader(path))
             {
@@ -432,8 +446,8 @@ namespace PROG7312_POE_LibraryApp.Data
                     string[] parts = line.Split(new[] { ',' }, 2);
                     if (line.Contains(" - "))
                     {
-                        
-                        parts = line.Split(new[] { '-'}, 2);
+
+                        parts = line.Split(new[] { '-' }, 2);
                         root.addChildCallnumber(parts[0], parts[1]);
                     }
                     else
@@ -441,7 +455,7 @@ namespace PROG7312_POE_LibraryApp.Data
                         parts = line.Split(new[] { ',' }, 2);
                         currentLevel1Index = Int32.Parse(parts[0].Substring(0, 1));
                         int callNumber = int.Parse(parts[0]);
-                        if (callNumber % 10 ==0)
+                        if (callNumber % 10 == 0)
                         {
                             root.callNumberChildern[currentLevel1Index].addChildCallnumber(parts[0], parts[1]);
                             currentLevel2Index = 0;
@@ -451,7 +465,7 @@ namespace PROG7312_POE_LibraryApp.Data
                             currentLevel2Index = Int32.Parse(parts[0].Substring(1, 1));
                             root.callNumberChildern[currentLevel1Index].callNumberChildern[currentLevel2Index].addChildCallnumber(parts[0], parts[1]);
                         }
-                        
+
 
                     }
 
@@ -460,12 +474,90 @@ namespace PROG7312_POE_LibraryApp.Data
             }
             CallNumberTree callNumbers = new CallNumberTree(root);
             return callNumbers;
-            
+
+        }
+        /// <summary>
+        /// Method that will get a random call number node from the tree root.
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns>A random call number node</returns>
+        public CallNumberNode getRandomCallNumberNode(CallNumberNode root){
+            Random random = new Random();
+            bool badcallnumber = true;
+            CallNumberNode randomCallNumber = new CallNumberNode();
+            do
+            {
+                int level1Random = random.Next(0, root.callNumberChildern.Count);
+                int level2Random = random.Next(0, root.callNumberChildern[level1Random].callNumberChildern.Count);
+                int level3Random = random.Next(1, root.callNumberChildern[level1Random].callNumberChildern[level2Random].callNumberChildern.Count);
+                randomCallNumber = root.callNumberChildern[level1Random].callNumberChildern[level2Random].callNumberChildern[level3Random];
+                if (!randomCallNumber.description.Contains("[Unassigned]") && !randomCallNumber.description.Contains("(Optional number)"))
+                {
+                    badcallnumber = false;
+                }
+            } while (badcallnumber);
+        
+            return randomCallNumber;
         }
 
-       
+        public List<CallNumberNode> getRandomPotentialAnswers(CallNumberNode root, CallNumberNode randomNode,int level) {
+            List<CallNumberNode> potentialAnswers = new List<CallNumberNode>();
+            if (level == 1)
+            {
+                potentialAnswers.Add(randomNode.callNumberParent.callNumberParent);
 
-       
+                while (potentialAnswers.Count!=4)
+                {
+                    Random random = new Random();
+
+                        int level1Random = random.Next(0, root.callNumberChildern.Count);
+                        if (!potentialAnswers.Contains(root.callNumberChildern[level1Random])&&
+                         !root.callNumberChildern[level1Random].description.Contains("[Unassigned]")&&
+                         !root.callNumberChildern[level1Random].description.Contains("(Optional number)")
+                        )
+                        {
+                            potentialAnswers.Add(root.callNumberChildern[level1Random]);
+                        }
+                    
+                }
+            }
+            else if (level == 2)
+            {
+                potentialAnswers.Add(randomNode.callNumberParent);
+                while (potentialAnswers.Count != 4)
+                {
+                    Random random = new Random();
+                    int levelofRandom = int.Parse(randomNode.callNumber.Substring(0, 1));
+                    int level2Random = random.Next(0, root.callNumberChildern[levelofRandom].callNumberChildern.Count);
+                    if (!potentialAnswers.Contains(root.callNumberChildern[levelofRandom].callNumberChildern[level2Random])&&
+                        !root.callNumberChildern[levelofRandom].callNumberChildern[level2Random].description.Contains("[Unassigned]")&&
+                        !root.callNumberChildern[levelofRandom].callNumberChildern[level2Random].description.Contains("(Optional number)"))
+                    {
+                        potentialAnswers.Add(root.callNumberChildern[levelofRandom].callNumberChildern[level2Random]);
+                    }
+
+                }
+            }
+            else
+            {
+                potentialAnswers.Add(randomNode);
+                while (potentialAnswers.Count != 4)
+                {
+                    Random random = new Random();
+
+                    int level3Random = random.Next(0, randomNode.callNumberParent.callNumberChildern.Count);
+                    if (!potentialAnswers.Contains(randomNode.callNumberParent.callNumberChildern[level3Random]) &&
+                        !randomNode.callNumberParent.callNumberChildern[level3Random].description.Contains("[Unassigned]")&&
+                        !randomNode.callNumberParent.callNumberChildern[level3Random].description.Contains("(Optional number)"))
+                    {
+                        potentialAnswers.Add(randomNode.callNumberParent.callNumberChildern[level3Random]);
+                    }
+                }
+
+            }
+            potentialAnswers = potentialAnswers.OrderBy(x => x.callNumber).ToList();
+            return potentialAnswers;
+        }
 
     }
 }
