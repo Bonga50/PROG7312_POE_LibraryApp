@@ -15,7 +15,7 @@
     foreach (var item in Model)
         {
             <div class="form-check">
-                <input type="radio" class="form-check-input" id="" name="optradio" value="option1" checked> @(item.callNumber) @(item.description)
+                <input type="radio" class="form-check-input" id="rad+@(item.callNumber)" name="optradio" value="@(item.callNumber)" checked> @(item.callNumber) @(item.description)
                 <label class="form-check-label" for="radio1"></label>
             </div>
         }
@@ -24,3 +24,22 @@
     <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
     </body>
 </html>
+
+@section Scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#checkButton").click(function () {
+                var selectedValue = $("input[name='optradio']:checked").val();
+                $.ajax({
+                    url: '/Home/checkFindingCallNumbers',
+                    type: 'POST',
+                    data: { selectedValue: selectedValue },
+                    success: function (response) {
+                        // Handle the response here
+                    }
+                });
+            });
+        });
+    </script>
+}
