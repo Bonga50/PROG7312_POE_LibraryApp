@@ -563,18 +563,29 @@ namespace PROG7312_POE_LibraryApp.Data
             return potentialAnswers;
         }
 
-        //public bool checkSelectedFoundNumber(string numbers) {
+        public bool checkSelectedFoundNumber(string numbers)
+        {
+            bool result = false;
+            if (findingCallnumberLevel == 1){
+                if (selectedRandomCallNumNode.callNumberParent.callNumberParent.callNumber == numbers)
+                {
+                    findingCallnumberLevel = 2;
+                    result = true;
+                }
+            }
+            else if (findingCallnumberLevel == 2){
+                if (selectedRandomCallNumNode.callNumberParent.callNumberParent.callNumber == numbers)
+                {
+                    findingCallnumberLevel = 3;
+                    result = true;
+                }
+            }
+            else{
 
-        //    if (findingCallnumberLevel == 1)
-        //    {
+            }
 
-        //    }
-        //    else if (findingCallnumberLevel == 2) { 
-
-        //    }
-        //    else { 
-        //    }
-        //}
+            return result;
+        }
 
     }
 }

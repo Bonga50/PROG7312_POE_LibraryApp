@@ -191,7 +191,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
         [HttpPost]
 
         public IActionResult checkFindingCallNumbers(string selectedValue) {
-            
+            bool result = DataAccess.Instance.checkSelectedFoundNumber(selectedValue);
             return Json(new { success = true });
         }
 
