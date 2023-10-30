@@ -18,7 +18,7 @@ namespace PROG7312_POE_LibraryApp.Data
         public List<identifyArea> identifyAreaBooks = new List<identifyArea>();
         public List<CallNumberNode> findingCallNumberList = new List<CallNumberNode>();
         public CallNumberNode selectedRandomCallNumNode = new CallNumberNode();
-        public int findingCallnumberLevel { get; set; }
+        public int findingCallnumberLevel { get; set; } = 1;
         public int mySwitch { get; set; }
 
 
@@ -415,7 +415,7 @@ namespace PROG7312_POE_LibraryApp.Data
             CallNumberTree Tree = BuildTree(path);
             CallNumberNode randomCallNumberNode = getRandomCallNumberNode(Tree.root);
             selectedRandomCallNumNode = randomCallNumberNode;
-            List<CallNumberNode> numberNodes = getRandomPotentialAnswers(Tree.root, randomCallNumberNode,3);
+            List<CallNumberNode> numberNodes = getRandomPotentialAnswers(Tree.root, randomCallNumberNode,findingCallnumberLevel);
             findingCallNumberList = numberNodes;
             return numberNodes;
             
@@ -562,6 +562,19 @@ namespace PROG7312_POE_LibraryApp.Data
             potentialAnswers = potentialAnswers.OrderBy(x => x.callNumber).ToList();
             return potentialAnswers;
         }
+
+        //public bool checkSelectedFoundNumber(string numbers) {
+
+        //    if (findingCallnumberLevel == 1)
+        //    {
+
+        //    }
+        //    else if (findingCallnumberLevel == 2) { 
+
+        //    }
+        //    else { 
+        //    }
+        //}
 
     }
 }
