@@ -209,16 +209,16 @@ namespace PROG7312_POE_LibraryApp.Controllers
             }
             return Json(new { success = result });
         }
-        public IActionResult findingCallNumberCallnumberNextLevel() {
+        //public IActionResult findingCallNumberCallnumberNextLevel() {
 
-            if (findingCallnumModel.Count == 0)
-            {
-                findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
-            }
-            ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+        //    if (findingCallnumModel.Count == 0)
+        //    {
+        //        findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
+        //    }
+        //    ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
 
-            return View("findingCallNumbers",findingCallnumModel);
-        }
+        //    return View("findingCallNumbers",findingCallnumModel);
+        //}
 
 
     }
