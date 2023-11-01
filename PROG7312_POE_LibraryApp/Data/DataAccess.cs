@@ -18,7 +18,10 @@ namespace PROG7312_POE_LibraryApp.Data
         public List<identifyArea> identifyAreaBooks = new List<identifyArea>();
         public List<CallNumberNode> findingCallNumberList = new List<CallNumberNode>();
         public CallNumberNode selectedRandomCallNumNode = new CallNumberNode();
+
+        CallNumberTree Tree = new CallNumberTree(null);
         public int findingCallnumberLevel { get; set; } = 1;
+        public int findingCallnumberLeveltracker { get; set; } = 1;
         public int mySwitch { get; set; }
 
 
@@ -411,14 +414,28 @@ namespace PROG7312_POE_LibraryApp.Data
         }
 
         public List<CallNumberNode> getCallNumbersFromTextFile() {
-            string path = getPath();
-            CallNumberTree Tree = BuildTree(path);
-            CallNumberNode randomCallNumberNode = getRandomCallNumberNode(Tree.root);
-            selectedRandomCallNumNode = randomCallNumberNode;
-            List<CallNumberNode> numberNodes = getRandomPotentialAnswers(Tree.root, randomCallNumberNode,findingCallnumberLevel);
-            findingCallNumberList = numberNodes;
-            return numberNodes;
-            
+            //check if children exist
+            if (Tree.root==null)
+            {
+                string path = getPath();
+                Tree = BuildTree(path);
+            }
+
+            if (findingCallnumberLevel==1)
+            {
+                CallNumberNode randomCallNumberNode = getRandomCallNumberNode(Tree.root);
+                selectedRandomCallNumNode = randomCallNumberNode;
+                List<CallNumberNode> numberNodes = getRandomPotentialAnswers(Tree.root, randomCallNumberNode, findingCallnumberLevel);
+                findingCallNumberList = numberNodes;
+                return numberNodes;
+            }
+            else
+            {
+                List<CallNumberNode> numberNodes = getRandomPotentialAnswers(Tree.root, selectedRandomCallNumNode, findingCallnumberLevel);
+                findingCallNumberList = numberNodes;
+            }
+
+            return findingCallNumberList;
         }
         /// <summary>
         /// Method to get the path to the path for the text file
@@ -574,14 +591,19 @@ namespace PROG7312_POE_LibraryApp.Data
                 }
             }
             else if (findingCallnumberLevel == 2){
-                if (selectedRandomCallNumNode.callNumberParent.callNumberParent.callNumber == numbers)
+                if (selectedRandomCallNumNode.callNumberParent.callNumber == numbers)
                 {
                     findingCallnumberLevel = 3;
                     result = true;
                 }
             }
-            else{
-
+            else if (findingCallnumberLevel == 3)
+            {
+                if (selectedRandomCallNumNode.callNumber == numbers)
+                {
+                    result = true;
+                    findingCallnumberLevel = 1;
+                }
             }
 
             return result;

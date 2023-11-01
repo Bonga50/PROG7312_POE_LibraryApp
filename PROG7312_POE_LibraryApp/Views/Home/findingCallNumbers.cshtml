@@ -21,10 +21,11 @@
         }
         }
 
-        <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
-        <form asp-action="findingCallNumberCallnumberNextLevel" method="post">
-            <input type="submit" id="nextlevelButton" class="btn btn-primary" value="NEXT LEVEL" />
-        </form>
+    <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
+
+    <form asp-action="findingCallNumbersNextLevel" method="post">
+        <input type="submit" id="goAgainButton" class="btn btn-primary" value="AGAIN" disabled  />
+    </form>
     </body>
 </html>
 
@@ -40,6 +41,11 @@
                     data: { selectedValue: selectedValue },
                     success: function (response) {
                         // Handle the response here
+                        console.log(response);
+                        if (response.success === true) {
+                            // Call another IActionResult method here
+                            document.getElementById('goAgainButton').disabled = false;
+                        }
                     }
                 });
             });

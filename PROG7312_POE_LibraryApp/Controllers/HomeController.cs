@@ -15,6 +15,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
         List<Achivements> AchivementModel = AchievementDataHandler.Instance.achievements;
         private List<CallNumberNode> findingCallnumModel = DataAccess.Instance.findingCallNumberList;
         Dictionary<string,string> areaModel = new Dictionary<string,string>();
+        int findCallnumberLevel = DataAccess.Instance.findingCallnumberLeveltracker;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -56,7 +57,6 @@ namespace PROG7312_POE_LibraryApp.Controllers
             if (findingCallnumModel.Count==0)
             {
                 findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
-                
 
             }
             ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
@@ -71,8 +71,19 @@ namespace PROG7312_POE_LibraryApp.Controllers
         public IActionResult ReplaceBooksTutorial() {
             return View();
         }
-
         [HttpPost]
+        public IActionResult findingCallNumbersNextLevel()
+        {
+            if (findCallnumberLevel != DataAccess.Instance.findingCallnumberLevel)
+            {
+                DataAccess.Instance.findingCallnumberLeveltracker = DataAccess.Instance.findingCallnumberLevel;
+                findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
+            }
+            ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+            return View("findingCallNumbers", findingCallnumModel);
+        }
+
+            [HttpPost]
         public IActionResult goAgain() {
          
             areaModel = DataAccess.Instance.getDeweyAreas();
@@ -196,7 +207,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
             {
                 findingCallnumModel = new List<CallNumberNode>();
             }
-            return Json(new { success = true });
+            return Json(new { success = result });
         }
         public IActionResult findingCallNumberCallnumberNextLevel() {
 
