@@ -192,9 +192,22 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
         public IActionResult checkFindingCallNumbers(string selectedValue) {
             bool result = DataAccess.Instance.checkSelectedFoundNumber(selectedValue);
+            if (result)
+            {
+                findingCallnumModel = new List<CallNumberNode>();
+            }
             return Json(new { success = true });
         }
+        public IActionResult findingCallNumberCallnumberNextLevel() {
 
+            if (findingCallnumModel.Count == 0)
+            {
+                findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
+            }
+            ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+
+            return View("findingCallNumbers",findingCallnumModel);
+        }
 
 
     }

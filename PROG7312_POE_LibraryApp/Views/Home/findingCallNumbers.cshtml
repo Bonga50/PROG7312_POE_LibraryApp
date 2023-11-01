@@ -7,11 +7,11 @@
 
     </head>
     <body>
-    <h4 class="display-5">Find the correct call number</h4>
+        <h4 class="display-5">Find the correct call number</h4>
 
-    <p>@ViewBag.SelectedCallnumber.description</p>
+        <p>@ViewBag.SelectedCallnumber.description</p>
 
-    @{
+        @{
     foreach (var item in Model)
         {
             <div class="form-check">
@@ -19,9 +19,12 @@
                 <label class="form-check-label" for="radio1"></label>
             </div>
         }
-    }
+        }
 
-    <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
+        <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
+        <form asp-action="findingCallNumberCallnumberNextLevel" method="post">
+            <input type="submit" id="nextlevelButton" class="btn btn-primary" value="NEXT LEVEL" />
+        </form>
     </body>
 </html>
 
