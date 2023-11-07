@@ -7,21 +7,44 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
         <style>
+        .help-icon {
+            position: absolute;
+            top: 60px; /* Adjust based on the height of your navbar */
+            right: 10px;
+            width: 50px;
+            height: 50px;
+        }
+
+        .achievement-icon {
+            position: absolute;
+            top: 60px; /* Adjust based on the height of your navbar */
+            left: 10px;
+            width: 50px;
+            height: 50px;
+        }
             .QuestionDesc{
-            font-size: 18px;
-            font-weight:bold;
+            font-size: 24px;
             }
+
+        .Scores {
+            font-size: 24px;
+        }
         </style>
     </head>
     <body>
+    <a asp-controller="Home" asp-action="IdentifyAreasTutorial">
+        <img src="~/images/icons8_help_100.png" class="help-icon" alt="Help Icon" />
+    </a>
+
+    <a asp-controller="Home" asp-action="GotoAchivements">
+        <img src="~/images/icons8_star_100.png" class="achievement-icon" alt="Achievement Icon" />
+    </a>
+
         <h4 class="display-5">Find the correct call number</h4>
 
     <p id="message" style="display: none; align-items: center; justify-content: center; background-color: #00FF00; text-align:center; font-weight: bold; font-size: 20px;">CORRECT</p>
     <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT</p>
-    <p>Description : <strong>@ViewBag.SelectedCallnumber.description</strong></p>
-
-
-    <p>Question : </p><p class="QuestionDesc" >  @ViewBag.SelectedCallnumber.description</p>
+    <p class="QuestionDesc">Description : <strong>@ViewBag.SelectedCallnumber.description</strong></p>
 
     <p>Select the correct call number: </p>
 
@@ -34,11 +57,13 @@
                 </div>
             }
         }
+        <br/>
+    <p class="Scores">Wins in a row : <strong>@ViewBag.WinsInRow </strong></p>
+    <p class="Scores">High Score: <strong>@ViewBag.HighScoreNum </strong></p>
 
     <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
-
     <form asp-action="findingCallNumbersNextLevel" method="post">
-        <input type="submit" id="goAgainButton" class="btn btn-primary" value="AGAIN" disabled  />
+        <input type="submit" id="goAgainButton" class="btn btn-primary" value="NEXT" disabled style="display: none;" />
     </form>
     </body>
 </html>
@@ -64,13 +89,14 @@
                             messageElement.style.display = "block";
                             setTimeout(function () {
                                 messageElement.style.display = "none";
-                            }, 5000);
+                                document.getElementById('goAgainButton').click();
+                            }, 1000);
 
                         } else {
                             messageElementWrong.style.display = "block";
                             setTimeout(function () {
                                 messageElementWrong.style.display = "none";
-                            }, 4000);
+                            }, 1000);
                         }
                     }
                 });

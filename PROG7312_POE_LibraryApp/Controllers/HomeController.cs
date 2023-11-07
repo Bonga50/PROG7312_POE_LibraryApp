@@ -60,6 +60,8 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
             }
             ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+            ViewBag.WinsInRow = AchievementDataHandler.Instance.FindingCallNumberWins;
+            ViewBag.HighScoreNum = AchievementDataHandler.Instance.FindingCallNumberHighScore;
             return View(findingCallnumModel);
         
         }
@@ -80,6 +82,8 @@ namespace PROG7312_POE_LibraryApp.Controllers
                 findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
             }
             ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+            ViewBag.WinsInRow = AchievementDataHandler.Instance.FindingCallNumberWins;
+            ViewBag.HighScoreNum = AchievementDataHandler.Instance.FindingCallNumberHighScore;
             return View("findingCallNumbers", findingCallnumModel);
         }
 
@@ -174,7 +178,12 @@ namespace PROG7312_POE_LibraryApp.Controllers
             {
                 AchievementDataHandler.Instance.UnlockMangekyo();
             }
-
+            if (AchievementDataHandler.Instance.numberOfColMatchWins > 1 &&
+               AchievementDataHandler.Instance.FindingCallNumberWins > 1 &&
+               AchievementDataHandler.Instance.numberOfWins > 1)
+            {
+                AchievementDataHandler.Instance.UnlockHighScore();
+            }
             return Json(new { success = result });
         }
 
@@ -195,7 +204,12 @@ namespace PROG7312_POE_LibraryApp.Controllers
                 AchievementDataHandler.Instance.UnlockThinkingHard();
             }
 
-
+            if (AchievementDataHandler.Instance.numberOfColMatchWins > 1 &&
+               AchievementDataHandler.Instance.FindingCallNumberWins > 1 &&
+               AchievementDataHandler.Instance.numberOfWins > 1)
+            {
+                AchievementDataHandler.Instance.UnlockHighScore();
+            }
             return Json(new { success = result });
         }
 
@@ -205,21 +219,35 @@ namespace PROG7312_POE_LibraryApp.Controllers
             bool result = DataAccess.Instance.checkSelectedFoundNumber(selectedValue);
             if (result)
             {
+                if (AchievementDataHandler.Instance.FindingNumLostPoint==0)
+                {
+                    AchievementDataHandler.Instance.AddFindingnumberWin();
+                }
+                else
+                {
+                    AchievementDataHandler.Instance.FindingNumLostPoint = 0;
+                }
                 findingCallnumModel = new List<CallNumberNode>();
             }
+            else
+            {
+                AchievementDataHandler.Instance.AddFindingLosses();
+                AchievementDataHandler.Instance.FindingNumLostPoint = 1;
+            }
+
+            if (AchievementDataHandler.Instance.numberOfColMatchWins >1 && 
+                AchievementDataHandler.Instance.FindingCallNumberWins>1 &&
+                AchievementDataHandler.Instance.numberOfWins>1)
+            {
+                AchievementDataHandler.Instance.UnlockHighScore();
+            }
+            if (AchievementDataHandler.Instance.FindingCallNumberHighScore>=10)
+            {
+                AchievementDataHandler.Instance.UnlockMoney();
+            }
+
             return Json(new { success = result });
         }
-        //public IActionResult findingCallNumberCallnumberNextLevel() {
-
-        //    if (findingCallnumModel.Count == 0)
-        //    {
-        //        findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
-        //    }
-        //    ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
-
-        //    return View("findingCallNumbers",findingCallnumModel);
-        //}
-
 
     }
 }
