@@ -15,7 +15,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
         List<Achivements> AchivementModel = AchievementDataHandler.Instance.achievements;
         private List<CallNumberNode> findingCallnumModel = DataAccess.Instance.findingCallNumberList;
         Dictionary<string,string> areaModel = new Dictionary<string,string>();
-        int findCallnumberLevel = DataAccess.Instance.findingCallnumberLeveltracker;
+        int findCallnumberLevel = -1;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -62,6 +62,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
             ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
             ViewBag.WinsInRow = AchievementDataHandler.Instance.FindingCallNumberWins;
             ViewBag.HighScoreNum = AchievementDataHandler.Instance.FindingCallNumberHighScore;
+            ViewBag.CurrentLevel = DataAccess.Instance.findingCallnumberLevel;
             return View(findingCallnumModel);
         
         }
@@ -84,6 +85,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
             ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
             ViewBag.WinsInRow = AchievementDataHandler.Instance.FindingCallNumberWins;
             ViewBag.HighScoreNum = AchievementDataHandler.Instance.FindingCallNumberHighScore;
+            ViewBag.CurrentLevel = DataAccess.Instance.findingCallnumberLevel;
             return View("findingCallNumbers", findingCallnumModel);
         }
 
@@ -233,6 +235,8 @@ namespace PROG7312_POE_LibraryApp.Controllers
             {
                 AchievementDataHandler.Instance.AddFindingLosses();
                 AchievementDataHandler.Instance.FindingNumLostPoint = 1;
+                DataAccess.Instance.startAgain();
+                findingCallnumModel = new List<CallNumberNode>();
             }
 
             if (AchievementDataHandler.Instance.numberOfColMatchWins >1 && 

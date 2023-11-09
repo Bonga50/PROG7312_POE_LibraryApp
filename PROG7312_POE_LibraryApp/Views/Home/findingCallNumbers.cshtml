@@ -43,7 +43,19 @@
         <h4 class="display-5">Find the correct call number</h4>
 
     <p id="message" style="display: none; align-items: center; justify-content: center; background-color: #00FF00; text-align:center; font-weight: bold; font-size: 20px;">CORRECT</p>
-    <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT</p>
+    @{
+        if (ViewBag.CurrentLevel == 1)
+        {
+            <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT</p>
+            <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">CORRECT ANSWER : @ViewBag.SelectedCallnumber.</p>
+
+        }
+
+        else
+        {
+            
+        }
+    }
     <p class="QuestionDesc">Description : <strong>@ViewBag.SelectedCallnumber.description</strong></p>
 
     <p>Select the correct call number: </p>
@@ -93,9 +105,11 @@
                             }, 1000);
 
                         } else {
+                            document.getElementById('goAgainButton').disabled = false;
                             messageElementWrong.style.display = "block";
                             setTimeout(function () {
                                 messageElementWrong.style.display = "none";
+                                document.getElementById('goAgainButton').click();
                             }, 1000);
                         }
                     }

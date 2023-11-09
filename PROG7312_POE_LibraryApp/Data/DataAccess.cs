@@ -579,7 +579,8 @@ namespace PROG7312_POE_LibraryApp.Data
             potentialAnswers = potentialAnswers.OrderBy(x => x.callNumber).ToList();
             return potentialAnswers;
         }
-
+        
+        
         public bool checkSelectedFoundNumber(string numbers)
         {
             bool result = false;
@@ -608,6 +609,15 @@ namespace PROG7312_POE_LibraryApp.Data
 
             return result;
         }
+        /// <summary>
+        /// Method that will  restart the level
+        /// </summary>
+        public void startAgain() {
+
+            findingCallnumberLevel = 1;
+
+        }
+       
 
     }
 }
