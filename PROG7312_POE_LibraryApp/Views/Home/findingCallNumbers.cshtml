@@ -118,10 +118,10 @@
                         console.log(response);
                         if (response.success === true) {
                             // Call another IActionResult method here
-                            document.getElementById('goAgainButton').disabled = false;
                             messageElement.style.display = "block";
                             setTimeout(function () {
                                 messageElement.style.display = "none";
+                                document.getElementById('goAgainButton').disabled = false;
                                 document.getElementById('goAgainButton').click();
                             }, 1000);
 

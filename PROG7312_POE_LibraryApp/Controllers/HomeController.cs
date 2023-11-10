@@ -74,6 +74,10 @@ namespace PROG7312_POE_LibraryApp.Controllers
         public IActionResult ReplaceBooksTutorial() {
             return View();
         }
+        public IActionResult findingCallNumTutorial()
+        {
+            return View();
+        }
         [HttpPost]
         public IActionResult findingCallNumbersNextLevel()
         {
@@ -269,6 +273,8 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
             return Json(new { success = result });
         }
+
+       
 
     }
 }
