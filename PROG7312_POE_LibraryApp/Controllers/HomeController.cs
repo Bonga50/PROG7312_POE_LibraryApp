@@ -37,6 +37,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
             
             return View(areaModel);
         }
+
         public IActionResult ReplacingBook()
         {
             if (!AchievementDataHandler.Instance.achievements[0].IsUnlocked)
@@ -74,10 +75,11 @@ namespace PROG7312_POE_LibraryApp.Controllers
         public IActionResult ReplaceBooksTutorial() {
             return View();
         }
-        public IActionResult findingCallNumTutorial()
+        public IActionResult FindingCallNumTutorial()
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult findingCallNumbersNextLevel()
         {
