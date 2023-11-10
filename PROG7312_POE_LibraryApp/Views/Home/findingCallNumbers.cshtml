@@ -46,37 +46,58 @@
     @{
         if (ViewBag.CurrentLevel == 1)
         {
-            <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT</p>
-            <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">CORRECT ANSWER : @ViewBag.SelectedCallnumber.</p>
+            <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT , CORRECT ANSWER IS <strong>@ViewBag.SelectedCallnumber.callNumberParent.callNumberParent</strong></p>
 
         }
-
         else
         {
-            
+            <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT , CORRECT ANSWER IS <strong>@ViewBag.SelectedCallnumber.callNumberParent</strong></p>
         }
     }
     <p class="QuestionDesc">Description : <strong>@ViewBag.SelectedCallnumber.description</strong></p>
+    @{
+        if (ViewBag.CurrentLevel <= 2)
+        {
+            <p>Select the correct call number: </p>
 
-    <p>Select the correct call number: </p>
 
-        @{
-    foreach (var item in Model)
+            foreach (var item in Model)
             {
-                 <div class="form-check">
-                <input type="radio" class="form-check-input" id="rad+@(item.callNumber)"  name="optradio" value="@(item.callNumber)" checked> @(item.callNumber) @(item.description)
-                <label class="form-check-label"  for="radio1"></label>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="rad+@(item.callNumber)" name="optradio" value="@(item.callNumber)" checked> @(item.callNumber) @(item.description)
+                    <label class="form-check-label" for="radio1"></label>
                 </div>
             }
         }
+        else
+        {
+            <p class="QuestionDesc">Final answer :   <strong>@ViewBag.SelectedCallnumber.callNumber  @ViewBag.SelectedCallnumber.description</strong></p>
+        }
+
+    }
+  
+        
         <br/>
     <p class="Scores">Wins in a row : <strong>@ViewBag.WinsInRow </strong></p>
     <p class="Scores">High Score: <strong>@ViewBag.HighScoreNum </strong></p>
 
-    <button id="checkButton" class="btn btn-primary" style="margin: 30px;">CHECK</button>
-    <form asp-action="findingCallNumbersNextLevel" method="post">
-        <input type="submit" id="goAgainButton" class="btn btn-primary" value="NEXT" disabled style="display: none;" />
-    </form>
+    @{
+        if (ViewBag.CurrentLevel <= 2)
+        {
+            <button id="checkButton" class="btn btn-primary" style="margin:30px 0px  ;">CHECK</button>
+            <form asp-action="findingCallNumbersNextLevel" method="post">
+                <input type="submit" id="goAgainButton" class="btn btn-primary" value="NEXT" disabled="disabled" />
+            </form>
+        }
+        else
+        {
+            <form asp-action="restartCallNumbersLevel" method="post">
+                <input type="submit" id="goAgainButton" class="btn btn-primary" value="NEXT"  />
+            </form>
+        }
+    }
+    
+    
     </body>
 </html>
 
@@ -105,12 +126,10 @@
                             }, 1000);
 
                         } else {
+                            document.getElementById('checkButton').disabled = true;
                             document.getElementById('goAgainButton').disabled = false;
                             messageElementWrong.style.display = "block";
-                            setTimeout(function () {
-                                messageElementWrong.style.display = "none";
-                                document.getElementById('goAgainButton').click();
-                            }, 1000);
+                       
                         }
                     }
                 });

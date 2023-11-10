@@ -77,15 +77,32 @@ namespace PROG7312_POE_LibraryApp.Controllers
         [HttpPost]
         public IActionResult findingCallNumbersNextLevel()
         {
+            
             if (findCallnumberLevel != DataAccess.Instance.findingCallnumberLevel)
             {
                 DataAccess.Instance.findingCallnumberLeveltracker = DataAccess.Instance.findingCallnumberLevel;
                 findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
+               
             }
             ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
             ViewBag.WinsInRow = AchievementDataHandler.Instance.FindingCallNumberWins;
             ViewBag.HighScoreNum = AchievementDataHandler.Instance.FindingCallNumberHighScore;
             ViewBag.CurrentLevel = DataAccess.Instance.findingCallnumberLevel;
+            return View("findingCallNumbers", findingCallnumModel);
+        }
+        [HttpPost]
+        public IActionResult restartCallNumbersLevel()
+        {
+            DataAccess.Instance.startAgain();
+
+            DataAccess.Instance.findingCallnumberLeveltracker = DataAccess.Instance.findingCallnumberLevel;
+            findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
+
+            ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+            ViewBag.WinsInRow = AchievementDataHandler.Instance.FindingCallNumberWins;
+            ViewBag.HighScoreNum = AchievementDataHandler.Instance.FindingCallNumberHighScore;
+            ViewBag.CurrentLevel = DataAccess.Instance.findingCallnumberLevel;
+
             return View("findingCallNumbers", findingCallnumModel);
         }
 
