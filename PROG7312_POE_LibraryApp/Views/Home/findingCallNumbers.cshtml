@@ -1,0 +1,139 @@
+﻿@{
+    ViewData["Title"] = "findingCallNumbers";
+}
+
+<html>
+    <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+        <style>
+        .help-icon {
+            position: absolute;
+            top: 60px; /* Adjust based on the height of your navbar */
+            right: 10px;
+            width: 50px;
+            height: 50px;
+        }
+
+        .achievement-icon {
+            position: absolute;
+            top: 60px; /* Adjust based on the height of your navbar */
+            left: 10px;
+            width: 50px;
+            height: 50px;
+        }
+            .QuestionDesc{
+            font-size: 24px;
+            }
+
+        .Scores {
+            font-size: 24px;
+        }
+        </style>
+    </head>
+    <body>
+    <a asp-controller="Home" asp-action="findingCallNumTutorial">
+        <img src="~/images/icons8_help_100.png" class="help-icon" alt="Help Icon" />
+    </a>
+
+    <a asp-controller="Home" asp-action="GotoAchivements">
+        <img src="~/images/icons8_star_100.png" class="achievement-icon" alt="Achievement Icon" />
+    </a>
+
+        <h4 class="display-5">Find the correct call number</h4>
+
+    <p id="message" style="display: none; align-items: center; justify-content: center; background-color: #00FF00; text-align:center; font-weight: bold; font-size: 20px;">CORRECT</p>
+    @{
+        if (ViewBag.CurrentLevel == 1)
+        {
+            <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT , CORRECT ANSWER IS <strong>@ViewBag.SelectedCallnumber.callNumberParent.callNumberParent</strong></p>
+
+        }
+        else
+        {
+            <p id="messageWrong" style="display: none; align-items: center; justify-content: center; background-color: #FF0000; text-align:center; font-weight: bold; font-size: 20px;">INCORRECT , CORRECT ANSWER IS <strong>@ViewBag.SelectedCallnumber.callNumberParent</strong></p>
+        }
+    }
+    <p class="QuestionDesc">Description : <strong>@ViewBag.SelectedCallnumber.description</strong></p>
+    @{
+        if (ViewBag.CurrentLevel <= 2)
+        {
+            <p>Select the correct call number: </p>
+
+
+            foreach (var item in Model)
+            {
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="rad+@(item.callNumber)" name="optradio" value="@(item.callNumber)" checked> @(item.callNumber) @(item.description)
+                    <label class="form-check-label" for="radio1"></label>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="QuestionDesc">Final answer :   <strong>@ViewBag.SelectedCallnumber.callNumber  @ViewBag.SelectedCallnumber.description</strong></p>
+        }
+
+    }
+  
+        
+        <br/>
+    <p class="Scores">Wins in a row : <strong>@ViewBag.WinsInRow </strong></p>
+    <p class="Scores">High Score: <strong>@ViewBag.HighScoreNum </strong></p>
+
+    @{
+        if (ViewBag.CurrentLevel <= 2)
+        {
+            <button id="checkButton" class="btn btn-primary" style="margin:30px 0px  ;">CHECK</button>
+            <form asp-action="findingCallNumbersNextLevel" method="post">
+                <input type="submit" id="goAgainButton" class="btn btn-primary" value="NEXT" disabled="disabled" />
+            </form>
+        }
+        else
+        {
+            <form asp-action="restartCallNumbersLevel" method="post">
+                <input type="submit" id="goAgainButton" class="btn btn-primary" value="NEXT"  />
+            </form>
+        }
+    }
+    
+    
+    </body>
+</html>
+
+@section Scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#checkButton").click(function () {
+                var selectedValue = $("input[name='optradio']:checked").val();
+                var messageElement = document.getElementById('message');
+                var messageElementWrong = document.getElementById('messageWrong');
+                $.ajax({
+                    url: '/Home/checkFindingCallNumbers',
+                    type: 'POST',
+                    data: { selectedValue: selectedValue },
+                    success: function (response) {
+                        // Handle the response here
+                        console.log(response);
+                        if (response.success === true) {
+                            // Call another IActionResult method here
+                            messageElement.style.display = "block";
+                            setTimeout(function () {
+                                messageElement.style.display = "none";
+                                document.getElementById('goAgainButton').disabled = false;
+                                document.getElementById('goAgainButton').click();
+                            }, 1000);
+
+                        } else {
+                            document.getElementById('checkButton').disabled = true;
+                            document.getElementById('goAgainButton').disabled = false;
+                            messageElementWrong.style.display = "block";
+                       
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

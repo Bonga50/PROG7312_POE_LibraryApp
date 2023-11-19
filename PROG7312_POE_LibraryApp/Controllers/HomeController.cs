@@ -13,7 +13,9 @@ namespace PROG7312_POE_LibraryApp.Controllers
         
         private List<Books> model = DataAccess.Instance.randomNums;
         List<Achivements> AchivementModel = AchievementDataHandler.Instance.achievements;
+        private List<CallNumberNode> findingCallnumModel = DataAccess.Instance.findingCallNumberList;
         Dictionary<string,string> areaModel = new Dictionary<string,string>();
+        int findCallnumberLevel = -1;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -35,6 +37,7 @@ namespace PROG7312_POE_LibraryApp.Controllers
             
             return View(areaModel);
         }
+
         public IActionResult ReplacingBook()
         {
             if (!AchievementDataHandler.Instance.achievements[0].IsUnlocked)
@@ -49,6 +52,22 @@ namespace PROG7312_POE_LibraryApp.Controllers
 
             return View(model);
         }
+
+        public IActionResult findingCallNumbers()
+        {
+            if (findingCallnumModel.Count==0)
+            {
+                findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
+
+            }
+            ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+            ViewBag.WinsInRow = AchievementDataHandler.Instance.FindingCallNumberWins;
+            ViewBag.HighScoreNum = AchievementDataHandler.Instance.FindingCallNumberHighScore;
+            ViewBag.CurrentLevel = DataAccess.Instance.findingCallnumberLevel;
+            return View(findingCallnumModel);
+        
+        }
+
         public IActionResult IdentifyAreasTutorial()
         {
             return View();
@@ -56,8 +75,44 @@ namespace PROG7312_POE_LibraryApp.Controllers
         public IActionResult ReplaceBooksTutorial() {
             return View();
         }
+        public IActionResult FindingCallNumTutorial()
+        {
+            return View();
+        }
 
         [HttpPost]
+        public IActionResult findingCallNumbersNextLevel()
+        {
+            
+            if (findCallnumberLevel != DataAccess.Instance.findingCallnumberLevel)
+            {
+                DataAccess.Instance.findingCallnumberLeveltracker = DataAccess.Instance.findingCallnumberLevel;
+                findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
+               
+            }
+            ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+            ViewBag.WinsInRow = AchievementDataHandler.Instance.FindingCallNumberWins;
+            ViewBag.HighScoreNum = AchievementDataHandler.Instance.FindingCallNumberHighScore;
+            ViewBag.CurrentLevel = DataAccess.Instance.findingCallnumberLevel;
+            return View("findingCallNumbers", findingCallnumModel);
+        }
+        [HttpPost]
+        public IActionResult restartCallNumbersLevel()
+        {
+            DataAccess.Instance.startAgain();
+
+            DataAccess.Instance.findingCallnumberLeveltracker = DataAccess.Instance.findingCallnumberLevel;
+            findingCallnumModel = DataAccess.Instance.getCallNumbersFromTextFile();
+
+            ViewBag.SelectedCallnumber = DataAccess.Instance.selectedRandomCallNumNode;
+            ViewBag.WinsInRow = AchievementDataHandler.Instance.FindingCallNumberWins;
+            ViewBag.HighScoreNum = AchievementDataHandler.Instance.FindingCallNumberHighScore;
+            ViewBag.CurrentLevel = DataAccess.Instance.findingCallnumberLevel;
+
+            return View("findingCallNumbers", findingCallnumModel);
+        }
+
+            [HttpPost]
         public IActionResult goAgain() {
          
             areaModel = DataAccess.Instance.getDeweyAreas();
@@ -148,7 +203,12 @@ namespace PROG7312_POE_LibraryApp.Controllers
             {
                 AchievementDataHandler.Instance.UnlockMangekyo();
             }
-
+            if (AchievementDataHandler.Instance.numberOfColMatchWins > 1 &&
+               AchievementDataHandler.Instance.FindingCallNumberWins > 1 &&
+               AchievementDataHandler.Instance.numberOfWins > 1)
+            {
+                AchievementDataHandler.Instance.UnlockHighScore();
+            }
             return Json(new { success = result });
         }
 
@@ -169,11 +229,54 @@ namespace PROG7312_POE_LibraryApp.Controllers
                 AchievementDataHandler.Instance.UnlockThinkingHard();
             }
 
+            if (AchievementDataHandler.Instance.numberOfColMatchWins > 1 &&
+               AchievementDataHandler.Instance.FindingCallNumberWins > 1 &&
+               AchievementDataHandler.Instance.numberOfWins > 1)
+            {
+                AchievementDataHandler.Instance.UnlockHighScore();
+            }
+            return Json(new { success = result });
+        }
+
+        [HttpPost]
+
+        public IActionResult checkFindingCallNumbers(string selectedValue) {
+            bool result = DataAccess.Instance.checkSelectedFoundNumber(selectedValue);
+            if (result)
+            {
+                if (AchievementDataHandler.Instance.FindingNumLostPoint==0)
+                {
+                    AchievementDataHandler.Instance.AddFindingnumberWin();
+                }
+                else
+                {
+                    AchievementDataHandler.Instance.FindingNumLostPoint = 0;
+                }
+                findingCallnumModel = new List<CallNumberNode>();
+            }
+            else
+            {
+                AchievementDataHandler.Instance.AddFindingLosses();
+                AchievementDataHandler.Instance.FindingNumLostPoint = 1;
+                DataAccess.Instance.startAgain();
+                findingCallnumModel = new List<CallNumberNode>();
+            }
+
+            if (AchievementDataHandler.Instance.numberOfColMatchWins >1 && 
+                AchievementDataHandler.Instance.FindingCallNumberWins>1 &&
+                AchievementDataHandler.Instance.numberOfWins>1)
+            {
+                AchievementDataHandler.Instance.UnlockHighScore();
+            }
+            if (AchievementDataHandler.Instance.FindingCallNumberHighScore>=10)
+            {
+                AchievementDataHandler.Instance.UnlockMoney();
+            }
 
             return Json(new { success = result });
         }
 
-
+       
 
     }
 }
