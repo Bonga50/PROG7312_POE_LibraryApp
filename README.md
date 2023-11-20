@@ -11,16 +11,18 @@
 
 ## About
 
-This is a web application built from with ASP.NET to help Librarians learn about the Dewey Decimal System.
-Here is a video link to show case how its used for Part1. https://youtu.be/CWr4XtF1vEI
-Here is a video link to show case how its used for Part2. https://youtu.be/CISG__ucsuQ
+This is a web application built from with ASP.NET to help Librarians learn about the Dewey Decimal System.  
+Here is a video link to show case how its used for Part1. https://youtu.be/CWr4XtF1vEI  
+Here is a video link to show case how its used for Part2. https://youtu.be/CISG__ucsuQ  
+Here is a video link to show case how its used for Part3.https://youtu.be/Y9ptw8ff8t4 
+
 
 ## Features
 
 
 - Replacing Books: Allows the user to sort call numbers and learn more abot the dewey decimal system.It starts with 3 call numbers and increments to 10 to ease the user in to learing the system.
 - Identifying areas: Allows user to match columns of call numbers and descriptions. It alternates between matching call numbers with descriptions and descriptions with call numbers.
-- Feature 3: Coming soon...
+- Finding call numbers: Allows user to find the higher level call numbers of a selected random call number.
 
 ## Getting Started
 
