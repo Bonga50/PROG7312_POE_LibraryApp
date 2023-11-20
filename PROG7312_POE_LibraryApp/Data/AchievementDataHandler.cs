@@ -32,6 +32,12 @@ namespace PROG7312_POE_LibraryApp.Data
         public int numberOfColMatchLooses { get; set; }
         public int numberOfLosses { get; set; }
         public DateTime levelStartTime { get; set; }
+
+        public int FindingCallNumberHighScore { get; set; }
+        public int FindingCallNumberWins { get; set; }
+        public int FindingCallNumberLoses { get; set; }
+
+        public int FindingNumLostPoint = 0;
         public List<Achivements> achievements { get; set; } = new List<Achivements>() {
         new Achivements(101,"I am Speed","You are faster than light itself.","~/images/speed_achivment_logo.png",
         "Finish ordering in less than 7 seconds.",false,false),
@@ -45,7 +51,12 @@ namespace PROG7312_POE_LibraryApp.Data
         "~/images/BigBrain3.jpg","Get the item matching right 3 times in a row",false,false),
         new Achivements(106,"Thinking hard","You dont give up easily and you will achive what ever you put your mind too.",
         "~/images/math-thinking.gif","Loose item column matching five times.",false,false),
-        new Achivements(107,"?????","????????????????????????","~/images/darkWoejack_Achivement_logo.png","Lose the same level 20 times.",true,false)
+        new Achivements(107,"100K","MONEY!, MONEY!, MONEY!",
+        "~/images/Money.gif","Reach a high score of 10 in finding call numbers",false,false),
+        new Achivements(108,"?????","????????????????????????","~/images/darkWoejack_Achivement_logo.png","Lose the same level 20 times.",true,false),
+        new Achivements(109,"Master librarian","You are the true master.",
+        "~/images/bilde.jpg","Win all the Dewey Decimal system activites atleast once in a row",false,false),
+
         };
 
         public List<Achivements> GetAchivements()
@@ -70,8 +81,8 @@ namespace PROG7312_POE_LibraryApp.Data
         }
         public void UnlockLosses()
         {
-            achievements.First(x => x.ID == 107).IsUnlocked = true;
-            achievements.First(x => x.ID == 107).IsSecret = false;
+            achievements.First(x => x.ID == 108).IsUnlocked = true;
+            achievements.First(x => x.ID == 108).IsSecret = false;
         }
 
         public void AddWin() {
@@ -93,6 +104,19 @@ namespace PROG7312_POE_LibraryApp.Data
             this.numberOfColMatchLooses++;
             this.numberOfColMatchWins = 0;
         }
+        public void AddFindingnumberWin() {
+        this.FindingCallNumberWins++;
+            this.FindingCallNumberLoses = 0;
+            if (this.FindingCallNumberWins>this.FindingCallNumberHighScore)
+            {
+                this.FindingCallNumberHighScore = this.FindingCallNumberWins;
+            }
+        }
+
+        public void AddFindingLosses() {
+            this.FindingCallNumberLoses++;
+            this.FindingCallNumberWins = 0;
+        }
 
         public void UnlockInfiniteMemory()
         {
@@ -102,6 +126,12 @@ namespace PROG7312_POE_LibraryApp.Data
         {
             achievements.First(x => x.ID == 106).IsUnlocked = true;
         }
-
+        public void UnlockHighScore() {
+            achievements.First(x => x.ID == 109).IsUnlocked = true;
+        }
+        public void UnlockMoney()
+        {
+            achievements.First(x => x.ID == 107).IsUnlocked = true;
+        }
     }
 }
